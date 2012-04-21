@@ -15,7 +15,7 @@ def mv_log(*log_fns):
         if os.path.exists(fn):
             shutil.move(fn, LOG_ROOT + '/old/')
 
-def getlogger():
+def get_logger():
     global log
     if not log:
         pid = os.getpid()
