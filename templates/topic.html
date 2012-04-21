@@ -1,0 +1,59 @@
+<html>
+<head>
+<title>{{ topic }}</title>
+<style>
+.container {
+    margin: 10px auto;
+    width: 75%;
+    clear: both;
+}
+.title {
+    text-align: center;}
+.article {
+    border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;
+    width: 48%;
+    margin: 20px 5px;}
+.odd {
+    border: 1px solid gray;
+    min-height: 190px;
+    float: left;}
+.even {
+    border: 1px solid gray;
+    min-height: 190px;
+    float: right;}
+.evenhead {
+    float: right;
+    height: 10px;}
+    
+.article div {
+    padding: 2px 5px;}
+.odd .date_title {
+    text-align: right;}
+.even .date_title {
+    text-align: left;}
+.home {
+    text-align: center;
+    margin: 10px auto;
+    clear: both;
+}
+</style>
+</head>
+<body>
+
+<div class='container'>
+    <div class='home'><a href='/'>Home</a></div>
+    <div class='title'>{{ topic }}</div>
+    <div class='article evenhead'>&nbsp;</div>
+    {% for a in articles %}
+        <div class='article {% cycle "odd" "even" %}'>
+            <div class='date_title'>{{ a.created_date }}</div>
+            <div><a href='{{ a.url }}' target='_blank'>{{ a.title }}</a></div>
+            <div><a href='{{ a.source_url }}'>{{ a.source }}</a></div>
+            <div>{{ a.brief }}</div>
+        </div>
+    {% endfor %}
+    <div class='home'><a href='/'>Home</a></div>
+</div>
+
+</body>
+</html>

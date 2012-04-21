@@ -1,0 +1,33 @@
+<html>
+<head>
+<title>News Timeline</title>
+
+<style>
+.pad {
+    width: 30%;
+    margin: 5px;
+    padding: 5px;
+    float: left;
+}
+
+.title {
+    padding: 5px;
+    text-align: center;
+    //clear: both;
+}
+
+.item {
+    margin: 5px;
+    float: left;
+}
+</style>
+
+</head>
+<body>
+<div class='pad'>
+    <div class='title'>Topics</div>
+    {% for topic in topics %}
+    <div class='item'><a href='topic?topic={{ topic }}'>{{ topic }}</a></div>
+    {% endfor %}
+</body>
+</html>
