@@ -32,6 +32,7 @@ def get_logger():
     return log        
 
 def _init_handler(fn, level=logging.DEBUG, maxBytes=30*MB, backupCount=10):
-    fh = handlers.RotatingFileHandler(fn, maxBytes, backupCount) 
+    #fh = handlers.RotatingFileHandler(fn, maxBytes, backupCount) 
+    fh = logging.FileHandler(fn, maxBytes, backupCount) 
     fh.setLevel(level)
     return fh
