@@ -31,13 +31,15 @@ def main():
     server.login(USERNAME, PASSWORD)
 
     select_info = server.select_folder('INBOX')
-    log.debug('%d messages in INBOX' % select_info['EXISTS'])
+    log.info('%d messages in INBOX' % select_info['EXISTS'])
 
     messages = server.search(['NOT DELETED'])
     #messages = server.search(['UNSEEN'])
-    log.debug("%d messages that aren't deleted" % len(messages))
+    log.info("%d messages that aren't deleted" % len(messages))
     if idx is not None:
         messages = [messages[idx],]
+    else:
+        messages = [-50:] #least 50 mails
     for msg_id in messages:
         try:
             process_email(server, msg_id)
@@ -66,7 +68,7 @@ def process_email(server, msg_id):
         #        log.debug(k, v)
         with open('email_backup/%s_%s.txt' % (msgid, topic_title), 'w') as f:
             f.write(plain.encode('utf8'))
-        log.debug(topic_title)
+        log.info('parsing topic: %s' % topic_title)
         topic_title = db.ensure_topic_exists(topic_title)
         for data in result:
             article = dict(url=data['url'],
@@ -78,11 +80,13 @@ def process_email(server, msg_id):
             db.insert_or_update_t_a_rel(topic_title, article_id, brief)
         done_msgs.append(msgid)
 
+    log.info('processed %s mails' % len(done_msgs))
     if idx is None and done_msgs:
         #mark as deleted
         server.set_flags(done_msgs, imapclient.DELETED)
         #tell server to delete deleted email
         server.expunge()
+        log.info('delete %s mails from server' % len(done_msgs))
 
 def get_email_info(part):
     items = dict(part.items())
