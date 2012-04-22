@@ -102,9 +102,14 @@ def ensure_article_exists(cursor, article):
               ' url_date = :url_date where id = :id'
         article['id'] = article_id
     cursor.execute(sql, article)
-    print cursor.fetchone()
     article_id = _get_article_id_by_url(cursor, article['url'])
     return article_id
+
+@log_entry
+@transaction
+def update_source(cursor, name, url):
+    sql = 'update source set url = ? where name = ?'
+    cursor.execute(sql, (url, name))
 
 @log_entry
 def _get_article_id_by_url(cursor, url):
