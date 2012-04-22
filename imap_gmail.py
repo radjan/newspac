@@ -65,7 +65,7 @@ def process_email(server, msg_id):
         with open('email_backup/%s_%s.txt' % (msgid, topic_title), 'w') as f:
             f.write(plain.encode('utf8'))
         #mark as deleted
-        #server.set_flags(msgid, imapclient.DELETED)
+        server.set_flags(msgid, imapclient.DELETED)
         print topic_title
         topic_title = db.ensure_topic_exists(topic_title)
         for data in result:
@@ -78,7 +78,7 @@ def process_email(server, msg_id):
             db.insert_or_update_t_a_rel(topic_title, article_id, brief)
 
     #tell server to delete deleted email
-    #server.expunge()
+    server.expunge()
 
 def get_email_info(part):
     items = dict(part.items())
