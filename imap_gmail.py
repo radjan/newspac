@@ -48,7 +48,8 @@ def main():
         try:
             process_email(server, msg_id)
             done_msgs.append(msg_id)
-        except Exception:
+        except Exception as e:
+            log.error('%s failed! exc: %s' % (msg_id, e))
             if idx is None:
                 with open('email_backup/error/id_%s' % msg_id, 'w') as f:
                     traceback.print_exc(file=f)
