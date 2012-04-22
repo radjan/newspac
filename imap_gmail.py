@@ -54,6 +54,7 @@ def process_email(server, msg_id):
     datalist = ['RFC822']
     response = server.fetch(msg_id, datalist)
 
+    done_msgs = []
     for msgid, data in response.iteritems():
         email_info, plain = parse_message(msgid, data)
         if not email_info:
@@ -64,8 +65,6 @@ def process_email(server, msg_id):
         #        print k, v
         with open('email_backup/%s_%s.txt' % (msgid, topic_title), 'w') as f:
             f.write(plain.encode('utf8'))
-        #mark as deleted
-        server.set_flags(msgid, imapclient.DELETED)
         print topic_title
         topic_title = db.ensure_topic_exists(topic_title)
         for data in result:
@@ -76,9 +75,13 @@ def process_email(server, msg_id):
             article_id = db.ensure_article_exists(article)
             brief = data['brief']
             db.insert_or_update_t_a_rel(topic_title, article_id, brief)
+        done_msgs.append(msgid)
 
-    #tell server to delete deleted email
-    server.expunge()
+    if done_msgs:
+        #mark as deleted
+        server.set_flags(done_msgs, imapclient.DELETED)
+        #tell server to delete deleted email
+        server.expunge()
 
 def get_email_info(part):
     items = dict(part.items())
