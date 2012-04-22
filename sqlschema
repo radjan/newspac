@@ -1,0 +1,21 @@
+PRAGMA encoding = "UTF-8"; 
+
+CREATE TABLE source (name varchar(255) primary key, url varchar(255) not null, logo varchar(255), last_modified datetime, created datetime);
+create trigger insert_source after insert on source begin update source set created = DATETIME('NOW') where name = new.name; end;
+create trigger update_source after update on source begin update source set last_modified = DATETIME('NOW') where name = new.name; end;
+
+CREATE TABLE article (id integer primary key autoincrement, title varchar(255) not null, url varchar(255) not null, source varchar(255) not null references source(name), image varchar(255), url_date datetime, url_status integer, handler varchar(255), cached text, last_modified datetime, created datetime);
+CREATE TRIGGER insert_article after insert on article begin update topic set created = DATETIME('NOW') where id = new.id; end;
+CREATE TRIGGER update_article after update on article begin update topic set last_modified = DATETIME('NOW') where id = new.id; end;
+
+CREATE TABLE topic (title varchar(255) primary key, type int not null default 0, brief text, last_modified datetime, created datetime);
+CREATE TRIGGER insert_topic after insert on topic begin update topic set created = DATETIME('NOW') where title = new.title; end;
+CREATE TRIGGER update_topic after update on topic begin update topic set last_modified = DATETIME('NOW') where title = new.title; end;
+
+CREATE TABLE article (id integer primary key autoincrement, title varchar(255) not null, url varchar(255) not null, source varchar(255) not null references source(name), image varchar(255), url_date datetime, url_status integer, handler varchar(255), cached text, last_modified datetime, created datetime);
+CREATE TRIGGER insert_article after insert on article begin update article set created = DATETIME('NOW') where id = new.id; end;
+CREATE TRIGGER update_article after update on article begin update article set last_modified = DATETIME('NOW') where id = new.id; end;
+
+CREATE TABLE topic_article_rel (topic_title varchar(255) constraint topic_fk references topic(title), article_id integer constraint topic_fk references article(id), brief text, last_modified datetime, created datetime, primary key (topic_title, article_id));
+CREATE TRIGGER insert_topic_article_rel after insert on topic_article_rel begin update topic_article_rel set created = DATETIME('NOW') where topic_title = new.topic_title and article_id = new.article_id; end;
+CREATE TRIGGER update_topic_article_rel after update on topic_article_rel begin update topic_article_rel set created = DATETIME('NOW') where topic_title = new.topic_title and article_id = new.article_id; end;
