@@ -26,6 +26,8 @@ TOPIC_TITLE = 'title'
 RECEIVE_TIME = 'receive_time'
 DATE_FORMAT = '%a, %d %b %Y %H:%M:%S +0000'
 
+MAX_BATCH_AMOUNT = 300
+
 def main():
     server = IMAPClient(HOST, use_uid=True, ssl=ssl)
     server.login(USERNAME, PASSWORD)
@@ -38,8 +40,8 @@ def main():
     log.info("%d messages that aren't deleted" % len(messages))
     if idx is not None:
         messages = [messages[idx],]
-    else:
-        messages = messages[-50:] #least 50 mails
+    elif len(messages) > MAX_BATCH_AMOUNT:
+        messages = messages[0-MAX_BATCH_AMOUNT:]
 
     done_msgs = []
     for msg_id in messages:
