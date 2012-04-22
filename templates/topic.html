@@ -1,6 +1,7 @@
 <html>
 <head>
-<title>{{ topic }}</title>
+<title>News - {{ topic }}</title>
+<link rel='stylesheet' href='s/style.css' type='text/css'/>
 <style>
 .container {
     margin: 10px auto;
@@ -8,7 +9,16 @@
     clear: both;
 }
 .title {
+    font-weight: bold;
+    padding: 20px;
+    border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;
+    background: #CFC;
     text-align: center;}
+
+.article_body {
+    background: url('/s/bg_line.png') repeat-y center;
+    margin: 0px;
+    padding: 0px;}
 .article {
     border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;
     width: 48%;
@@ -43,7 +53,8 @@
 <div class='container'>
     <div class='home'><a href='/'>Home</a></div>
     <div class='title'>{{ topic }}</div>
-    <div class='article evenhead'>&nbsp;</div>
+    <div class='article_body'>
+        <div class='article evenhead'>&nbsp;</div>
     {% for a in articles %}
         <div class='article {% cycle "odd" "even" %}'>
             <div class='date_title'>{{ a.created_date }}</div>
@@ -52,6 +63,8 @@
             <div>{{ a.brief }}</div>
         </div>
     {% endfor %}
+    <div style='clear:both'>&nbsp;</div>
+    </div>
     <div class='home'><a href='/'>Home</a></div>
 </div>
 
