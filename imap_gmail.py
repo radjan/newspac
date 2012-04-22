@@ -39,16 +39,27 @@ def main():
     if idx is not None:
         messages = [messages[idx],]
     else:
-        messages = [-50:] #least 50 mails
+        messages = messages[-50:] #least 50 mails
+
+    done_msgs = []
     for msg_id in messages:
         try:
             process_email(server, msg_id)
+            done_msgs.append(msg_id)
         except Exception:
             if idx is None:
                 with open('email_backup/error/id_%s' % msg_id, 'w') as f:
                     traceback.print_exc(file=f)
             else:
                 raise
+
+    log.info('processed %s mails' % len(done_msgs))
+    if idx is None and done_msgs:
+        #mark as deleted
+        server.set_flags(done_msgs, imapclient.DELETED)
+        #tell server to delete deleted email
+        server.expunge()
+        log.info('delete %s mails from server' % len(done_msgs))
 
 def process_email(server, msg_id):
     #print
@@ -57,7 +68,6 @@ def process_email(server, msg_id):
     datalist = ['RFC822']
     response = server.fetch(msg_id, datalist)
 
-    done_msgs = []
     for msgid, data in response.iteritems():
         email_info, plain = parse_message(msgid, data)
         if not email_info:
@@ -78,15 +88,6 @@ def process_email(server, msg_id):
             article_id = db.ensure_article_exists(article)
             brief = data['brief']
             db.insert_or_update_t_a_rel(topic_title, article_id, brief)
-        done_msgs.append(msgid)
-
-    log.info('processed %s mails' % len(done_msgs))
-    if idx is None and done_msgs:
-        #mark as deleted
-        server.set_flags(done_msgs, imapclient.DELETED)
-        #tell server to delete deleted email
-        server.expunge()
-        log.info('delete %s mails from server' % len(done_msgs))
 
 def get_email_info(part):
     items = dict(part.items())
