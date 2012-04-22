@@ -48,7 +48,7 @@
         <div class='article {% cycle "odd" "even" %}'>
             <div class='date_title'>{{ a.created_date }}</div>
             <div><a href='{{ a.url }}' target='_blank'>{{ a.title }}</a></div>
-            <div><a href='{{ a.source_url }}'>{{ a.source }}</a></div>
+            <div><a href='{{ a.source_url }}' target='_blank'>{{ a.source }}</a></div>
             <div>{{ a.brief }}</div>
         </div>
     {% endfor %}
