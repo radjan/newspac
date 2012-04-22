@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 import sys
 idx = int(sys.argv[1]) if len(sys.argv) > 1 else None
-#print sys.version_info
-import pprint
 import traceback
 
 from imapclient import imapclient
@@ -15,6 +13,9 @@ import base64
 from datetime import datetime
 
 import database as db
+import common
+
+log = common.get_logger()
 
 HOST = 'imap.gmail.com'
 USERNAME = 'news.packs@gmail.com'
@@ -30,11 +31,11 @@ def main():
     server.login(USERNAME, PASSWORD)
 
     select_info = server.select_folder('INBOX')
-    print '%d messages in INBOX' % select_info['EXISTS']
+    log.debug('%d messages in INBOX' % select_info['EXISTS'])
 
     messages = server.search(['NOT DELETED'])
     #messages = server.search(['UNSEEN'])
-    print "%d messages that aren't deleted" % len(messages)
+    log.debug("%d messages that aren't deleted" % len(messages))
     if idx is not None:
         messages = [messages[idx],]
     for msg_id in messages:
@@ -49,7 +50,7 @@ def main():
 
 def process_email(server, msg_id):
     #print
-    #print "Messages:"
+    #log.debug("Messages:")
     #datalist = ['FLAGS', 'RFC822', 'BODY']
     datalist = ['RFC822']
     response = server.fetch(msg_id, datalist)
@@ -62,10 +63,10 @@ def process_email(server, msg_id):
         topic_title, result = parse_plain(plain)
         #for data in result:
         #    for k, v in data.items():
-        #        print k, v
+        #        log.debug(k, v)
         with open('email_backup/%s_%s.txt' % (msgid, topic_title), 'w') as f:
             f.write(plain.encode('utf8'))
-        print topic_title
+        log.debug(topic_title)
         topic_title = db.ensure_topic_exists(topic_title)
         for data in result:
             article = dict(url=data['url'],
@@ -77,7 +78,7 @@ def process_email(server, msg_id):
             db.insert_or_update_t_a_rel(topic_title, article_id, brief)
         done_msgs.append(msgid)
 
-    if done_msgs:
+    if idx is None and done_msgs:
         #mark as deleted
         server.set_flags(done_msgs, imapclient.DELETED)
         #tell server to delete deleted email
@@ -93,24 +94,24 @@ def is_google_alert(sender):
 def parse_message(msgid, data):
     plain = sender = sent_time = ''
     #print
-    #print '   ID %d: FLAGS=%s' % (msgid, data['FLAGS'])
+    #log.debug('   ID %d: FLAGS=%s' % (msgid, data['FLAGS']))
     msg =  email.message_from_string(data['RFC822'])
     
-    #print dir(msg)
-    #print msg.is_multipart()
-    #print msg.get_content_subtype()
-    #print '-' * 60
-    #print base64.b64decode(msg.get_payload().replace('\r\n\r\n', '||||').replace('\r\n', '||||').replace(',||||','||||'))A
+    #log.debug(dir(msg))
+    #log.debug(msg.is_multipart())
+    #log.debug(msg.get_content_subtype())
+    #log.debug('-' * 60)
+    #log.debug(base64.b64decode(msg.get_payload().replace('\r\n\r\n', '||||').replace('\r\n', '||||').replace(',||||','||||')))
 
     from_google_alert = True
     for part in msg.walk():
         if not from_google_alert:
             break
         content_type = part.get_content_type()
-        #print '-'*60
-        #print content_type
-        #pprint.pprint(dict(part.get_params()))
-        #pprint.pprint(dict(part.items()))
+        #log.debug('-'*60)
+        #log.debug(content_type)
+        #log.debug(dict(part.get_params()))
+        #log.debug(dict(part.items()))
         if msg.is_multipart() and content_type == 'multipart/alternative':
             sender, sent_time = get_email_info(part)
             from_google_alert = is_google_alert(sender)
@@ -161,7 +162,7 @@ def parse_plain(plain):
     skip = False
     more_title = False
     for line in l:
-        #print len(line.encode('utf8')), line
+        #log.debug(len(line.encode('utf8')), line)
         if skip:
             skip = False
             continue
