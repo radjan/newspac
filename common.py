@@ -28,7 +28,7 @@ def get_logger():
         debug_fh = _init_handler(debug_fn, formatter)
         fh = _init_handler(log_fn, formatter, logging.WARN)
         ch = logging.StreamHandler()
-        ch.setLevel(logging.DEBUG)
+        ch.setLevel(logging.INFO)
         ch.setFormatter(formatter)
 
         log.addHandler(debug_fh)
