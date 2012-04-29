@@ -11,6 +11,10 @@ MB = 1024 * 1024
 LOG_ROOT = '/var/log/newspack/'
 
 def mv_log(*log_fns):
+    fn = log_fns[1]
+    if os.path.exists(fn) and os.path.getsize(fn) == 0:
+        for fn in log_fns:
+            os.remove(fn)
     for fn in log_fns:
         if os.path.exists(fn):
             shutil.move(fn, LOG_ROOT + '/old/')
@@ -18,7 +22,7 @@ def mv_log(*log_fns):
 def get_logger():
     global log
     if not log:
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        formatter = logging.Formatter('%(asctime)s - %(module)s - %(levelname)s - %(message)s')
         pid = os.getpid()
         debug_fn = LOG_ROOT + str(pid) + '-news-debug.log'
         log_fn = LOG_ROOT + str(pid) + '-news.log'
