@@ -14,7 +14,7 @@ sql = 'select t.title, count(a.id), max(a.created)'\
       ' join topic_article_rel as tar on t.title = tar.topic_title'\
       ' join article as a on tar.article_id = a.id'\
       ' group by t.title'
-rows = c.execute(sql)
+rows = list(c.execute(sql))
 insert_sql = 'insert into dn_topic (title, amount, last_article) values (?, ?, ?)'
 c.executemany(insert_sql, rows)
 conn.commit()
