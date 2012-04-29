@@ -7,6 +7,9 @@ import shutil
 import atexit
 log = None
 
+DB_DIR = os.path.dirname(__file__)
+DB_PATH = DB_DIR + '/newspacks.db'
+
 MB = 1024 * 1024
 LOG_ROOT = '/var/log/newspack/'
 

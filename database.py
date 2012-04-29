@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 import sqlite3
 import atexit
-import os
-DB_DIR = os.path.dirname(__file__)
 
 import traceback
 
@@ -25,7 +23,7 @@ def log_entry(fn):
     new_fn.__dict__.update(fn.__dict__)
     return new_fn
 
-conn = sqlite3.connect(DB_DIR + '/newspacks.db')
+conn = sqlite3.connect(common.DB_PATH)
 atexit.register(conn.close)
 def transaction(fn):
     def new_fn(*args, **kw):
