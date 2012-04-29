@@ -12,6 +12,8 @@ CREATE TABLE topic (title varchar(255) primary key, type int not null default 0,
 CREATE TRIGGER insert_topic after insert on topic begin update topic set created = DATETIME('NOW') where title = new.title; end;
 CREATE TRIGGER update_topic after update on topic begin update topic set last_modified = DATETIME('NOW') where title = new.title; end;
 
+CREATE TABLE dn_topic (title varchar(255) primary key references topic(title), amount int not null default 0, last_article datetime);
+
 CREATE TABLE article (id integer primary key autoincrement, title varchar(255) not null, url varchar(255) not null, source varchar(255) not null references source(name), image varchar(255), url_date datetime, url_status integer, handler varchar(255), cached text, last_modified datetime, created datetime);
 CREATE TRIGGER insert_article after insert on article begin update article set created = DATETIME('NOW') where id = new.id; end;
 CREATE TRIGGER update_article after update on article begin update article set last_modified = DATETIME('NOW') where id = new.id; end;
