@@ -24,6 +24,8 @@
     border: 1px dotted gray;
     border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;
 }
+.item:hover {
+    background: #EFE;}
 
 .tag_1, .tag_2, .tag_3, .tag_4, .tag_5 { font-size: 10pt; }
 .tag_1 { color: #888; }
@@ -55,9 +57,9 @@
     <div class='item'>
         <a href='topic?topic={{ topic.title }}'>
         {{ topic.title }}
+        </a>
         <span class='tag_{{ topic.level }}'>
         ({{ topic.amount }})</span>
-        </a>
     </div>
     {% endfor %}
 </body>
