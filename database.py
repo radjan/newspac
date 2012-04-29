@@ -144,6 +144,17 @@ def list_topics(cursor):
 
 @log_entry
 @transaction
+def homepage_topics(cursor):
+    sql = 'select t.title, dnt.amount, dnt.last_article from topic as t'\
+          ' join dn_topic dnt on t.title = dnt.title order by dnt.last_article desc'
+    cursor.execute(sql)
+    fetch = cursor.fetchall()
+    keys = ['title', 'amount', 'last_article']
+    results = [dict(zip(keys, row)) for row in fetch]
+    return results
+
+@log_entry
+@transaction
 def list_articles_by_topic(cursor, topic_title):
     cols = ['id', 'title', 'url', 'url_date', 'url_status', 'created',
             'source', 'source_url', 'brief']

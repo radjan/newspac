@@ -16,9 +16,21 @@
 }
 
 .item {
-    margin: 5px;
+    vertical-align: text-bottom;
+    width: 120px;
+    margin: 3px;
+    padding: 5px;
     float: left;
+    border: 1px dotted gray;
+    border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;
 }
+
+.tag_1, .tag_2, .tag_3, .tag_4, .tag_5 { font-size: 10pt; }
+.tag_1 { color: #888; }
+.tag_2 { color: #000; }
+.tag_3 { color: #0CC; }
+.tag_4 { color: #F80; }
+.tag_5 { color: #F00; }
 </style>
 <!-- google anlytics -->
 <script type="text/javascript">
@@ -40,7 +52,13 @@
 <div class='pad'>
     <div class='title'>Topics</div>
     {% for topic in topics %}
-    <div class='item'><a href='topic?topic={{ topic }}'>{{ topic }}</a></div>
+    <div class='item'>
+        <a href='topic?topic={{ topic.title }}'>
+        {{ topic.title }}
+        <span class='tag_{{ topic.level }}'>
+        ({{ topic.amount }})</span>
+        </a>
+    </div>
     {% endfor %}
 </body>
 </html>
