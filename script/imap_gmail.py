@@ -2,8 +2,10 @@
 # -*- coding: utf-8 -*-
 import sys
 idx = int(sys.argv[1]) if len(sys.argv) > 1 else None
-import traceback
+import os
+sys.path.append(os.path.dirname(__file__) + '/..')
 
+import traceback
 from imapclient import imapclient
 from imapclient.imapclient import IMAPClient
 import email
