@@ -12,7 +12,7 @@ c = conn.cursor()
 c.execute('delete from dn_topic')
 
 #query
-sql = 'select t.title, count(a.id), max(a.created)'\
+sql = 'select t.title, count(a.id), max(a.url_date)'\
       ' from topic as t'\
       ' join topic_article_rel as tar on t.title = tar.topic_title'\
       ' join article as a on tar.article_id = a.id'\
