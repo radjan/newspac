@@ -2,38 +2,6 @@
 <head>
 <title>News Timeline</title>
 <link rel='stylesheet' href='s/style.css' type='text/css'/>
-<style>
-.pad {
-    width: 60%;
-    margin: 5px auto;
-    padding: 5px;
-}
-
-.title {
-    padding: 5px;
-    text-align: center;
-    //clear: both;
-}
-
-.item {
-    vertical-align: text-bottom;
-    width: 120px;
-    margin: 3px;
-    padding: 5px;
-    float: left;
-    border: 1px dotted gray;
-    border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;
-}
-.item:hover {
-    background: #EFE;}
-
-.tag_1, .tag_2, .tag_3, .tag_4, .tag_5 { font-size: 10pt; }
-.tag_1 { color: #888; }
-.tag_2 { color: #000; }
-.tag_3 { color: #0CC; }
-.tag_4 { color: #F80; }
-.tag_5 { color: #F00; }
-</style>
 <!-- google anlytics -->
 <script type="text/javascript">
 
@@ -51,6 +19,8 @@
 <!-- end of google anlytics -->
 </head>
 <body>
+<div class='page'>
+
 <div class='pad'>
     <div class='title'>Topics</div>
     {% for topic in topics %}
@@ -62,16 +32,25 @@
         ({{ topic.amount }})</span>
     </div>
     {% endfor %}
+</div>
+
+<div class='col'>
+    <div class='adsense'>
 <script type="text/javascript"><!--
 google_ad_client = "ca-pub-4237238967501969";
-/* newspac */
-google_ad_slot = "0984980654";
-google_ad_width = 250;
+/* newspac_300x250 */
+google_ad_slot = "3229242256";
+google_ad_width = 300;
 google_ad_height = 250;
 //-->
 </script>
 <script type="text/javascript"
 src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
 </script>
+    </div>
+</div>
+
+<div class='footer'> </div>
+</div>
 </body>
 </html>

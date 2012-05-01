@@ -1,3 +1,7 @@
+body {
+    margin: 0;
+    padding: 0;
+}
 a,
 a:visited {
     color: #48C;
@@ -7,3 +11,99 @@ a:hover {
     color: #4A4;
     text-decoration: underline;
 }
+
+.adsense {
+    width: 300px;
+    margin: 0;
+    padding: 0;}
+
+.footer { clear: both}
+
+.page {
+    width: 910px;
+    margin: 0 auto;
+    padding: 0;
+}
+
+.pad {
+    width: 560px;
+    padding: 20px;
+    margin: 0;
+    float: left;
+}
+.col {
+    width: 300px;
+    margin: 0;
+    padding: 0;
+    float: left;
+}
+
+.title {
+    padding: 5px;
+    text-align: center;
+    //clear: both;
+}
+
+.item {
+    vertical-align: text-bottom;
+    width: 120px;
+    margin: 1px;
+    padding: 7px;
+    float: left;
+    border: 1px dotted gray;
+    border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;
+}
+.item:hover {
+background: #EFE;}
+
+.tag_1, .tag_2, .tag_3, .tag_4, .tag_5 { font-size: 10pt; }
+.tag_1 { color: #888; }
+.tag_2 { color: #000; }
+.tag_3 { color: #0CC; }
+.tag_4 { color: #F80; }
+.tag_5 { color: #F00; }
+
+.container {
+    margin: 10px auto;
+    width: 75%;
+    clear: both;
+}
+.topic {
+    font-weight: bold;
+    padding: 20px;
+    border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;
+    background: #CFC;
+    text-align: center;}
+
+.article_body {
+    background: url('/s/bg_line.png') repeat-y center;
+    margin: 0px;
+    padding: 0px;}
+.article {
+    border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;
+    width: 48%;
+    margin: 20px 5px;}
+.odd {
+    border: 1px solid gray;
+    min-height: 190px;
+    float: left;}
+.even {
+    border: 1px solid gray;
+    min-height: 190px;
+    float: right;}
+.evenhead {
+    float: right;
+    height: 10px;}
+    
+.article div {
+    padding: 2px 5px;}
+.odd .date_title {
+    text-align: right;}
+.even .date_title {
+    text-align: left;}
+.home {
+    text-align: center;
+    margin: 10px auto;
+    clear: both;
+}
+</style>
