@@ -47,6 +47,7 @@ a:hover {
 .item {
     vertical-align: text-bottom;
     width: 120px;
+    height: 18px;
     margin: 1px;
     padding: 7px;
     float: left;
