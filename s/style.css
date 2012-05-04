@@ -102,6 +102,11 @@ background: #EFE;}
     text-align: right;}
 .even .date_title {
     text-align: left;}
+
+.showmore {
+    text-align: center;
+}
+
 .home {
     text-align: center;
     margin: 10px auto;

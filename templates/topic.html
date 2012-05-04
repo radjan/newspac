@@ -35,6 +35,13 @@
     {% endfor %}
     <div style='clear:both'>&nbsp;</div>
     </div>
+    {% if limit %}
+        <div class='showmore'>
+            此頁顯示前 {{ limit }} 資料，
+            <a href='topic?topic={{ topic }}&limit=all'>
+            顯示全部</a>
+        </div>
+    {% endif %}
     <div class='home'><a href='/'>Home</a></div>
 </div>
 <div class='adsense'>
