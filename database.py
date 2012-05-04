@@ -155,7 +155,10 @@ def homepage_topics(cursor):
 
 @log_entry
 @transaction
-def list_articles_by_topic(cursor, topic_title):
+def list_articles_by_topic(cursor, topic_title, limit):
+    limit_cause = ''
+    if limit > 0:
+        limit_cause = ' limit %s' % limit
     cols = ['id', 'title', 'url', 'url_date', 'url_status', 'created',
             'source', 'source_url', 'brief']
     sql = '''
@@ -167,7 +170,7 @@ def list_articles_by_topic(cursor, topic_title):
           where
                 t_a_rel.topic_title = ?
           order by a.created desc
-          '''
+          ''' + limit_cause
     cursor.execute(sql, (topic_title,))
     fetch = cursor.fetchall()
     return [dict(zip(cols, record)) for record in fetch]

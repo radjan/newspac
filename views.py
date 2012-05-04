@@ -46,8 +46,21 @@ def topic(request):
         return a
         
     topic = request.REQUEST['topic']
-    articles = db.list_articles_by_topic(topic)
+    limit = request.REQUEST['limit'] if 'limit' in request.REQUEST else None
+    if limit is None:
+        limit = 100
+    elif limit == 'all':
+        limit = 0
+    else:
+        try:
+            limit = int(limit)
+        except Exception:
+            limit = 100
+
+    articles = db.list_articles_by_topic(topic, limit)
     articles = [_process_row(a) for a in articles]
+    limit = limit if len(articles) == limit else 0
     return render_to_response('topic.html',
                               dict(topic=topic,
-                                   articles=articles))
+                                   articles=articles,
+                                   limit=limit))
