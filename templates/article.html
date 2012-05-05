@@ -1,0 +1,41 @@
+<html>
+<head>
+<title>新聞標題 - {{ title }}</title>
+<link rel='stylesheet' href='s/style.css' type='text/css'/>
+<!-- google anlytics -->
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-31427257-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<!-- end of google anlytics -->
+</head>
+<body>
+
+<div class='container'>
+    <div class='home'><a href='/'>回首頁</a></div>
+    <div>新聞：<a href='{{ url }}' target='_blank'>{{ title }}</a></div>
+    <div>來源：<a href='{{ source.url }}' target='_blank'>{{ source.name }}</a></div>
+    <div>擷取時間：{{ url_date }}</div>
+    <div>
+    相關主題：
+    {% for t in topics %}
+        <div class='topic_item'>
+            <div><a href='topic?topic={{ t.topic_title }}'>{{ t.topic_title }}</a></div>
+            <div>{{ t.brief }}</div>
+        </div>
+    {% endfor %}
+    <div class='home'><a href='/'>回首頁</a></div>
+</div>
+<div class='adsense'>
+</div>
+</body>
+</html>

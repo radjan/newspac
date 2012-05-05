@@ -174,3 +174,31 @@ def list_articles_by_topic(cursor, topic_title, limit):
     cursor.execute(sql, (topic_title,))
     fetch = cursor.fetchall()
     return [dict(zip(cols, record)) for record in fetch]
+
+@log_entry
+@transaction
+def get_article(cursor, aid):
+    cols = ('id', 'title', 'url', 'source', 'url_date', 'url_status')
+    sql = 'select %s, %s, %s, %s, %s, %s from article where id = ?' % cols 
+    cursor.execute(sql, (aid,))
+    article = cursor.fetchone()
+    return dict(zip(cols, article)) if article else None
+
+@log_entry
+@transaction
+def get_source(cursor, name):
+    cols = ['name', 'url', 'logo']
+    sql = 'select name, url, logo from source'\
+          ' where name=?'
+    cursor.execute(sql, (name,))
+    source = cursor.fetchone()
+    return dict(zip(cols, source)) if source else None
+
+@log_entry
+@transaction
+def get_topics_by_article(cursor, aid):
+    cols = ('topic_title', 'brief')
+    sql = 'select %s, %s from topic_article_rel where article_id = ?' % cols
+    cursor.execute(sql, (aid,))
+    fetch = cursor.fetchall()
+    return [dict(zip(cols, row)) for row in fetch]

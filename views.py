@@ -1,6 +1,8 @@
 import urllib
-import database as db
 from django.shortcuts import render_to_response
+from django.http import HttpResponseRedirect, HttpResponse
+
+import database as db
 import common
 log = common.get_logger()
 
@@ -37,16 +39,12 @@ def _get_indexes(clist):
     seg_35 = int(l * 0.35)
     return [clist[seg_10], clist[seg_35], clist[-seg_35], clist[-seg_10]]
 
-
 def topic(request):
-    def _process_row(a):
-        a['created_date'] = a['created'][:10] #.timepstr('%Y-%M-%D')
-        a['url'] = urllib.unquote(a['url'])
-        a['source_url'] = urllib.unquote(a['source_url'])
-        return a
-        
-    topic = request.REQUEST['topic']
-    limit = request.REQUEST['limit'] if 'limit' in request.REQUEST else None
+    topic = _get(request, 'topic')
+    if not topic:
+        return HttpResponseRedirect('/')
+
+    limit = _get(request, 'limit')
     if limit is None:
         limit = 100
     elif limit == 'all':
@@ -57,6 +55,12 @@ def topic(request):
         except Exception:
             limit = 100
 
+    def _process_row(a):
+        a['created_date'] = a['created'][:10] #.timepstr('%Y-%M-%D')
+        a['url'] = urllib.unquote(a['url'])
+        a['source_url'] = urllib.unquote(a['source_url'])
+        return a
+        
     articles = db.list_articles_by_topic(topic, limit)
     articles = [_process_row(a) for a in articles]
     limit = limit if len(articles) == limit else 0
@@ -64,3 +68,20 @@ def topic(request):
                               dict(topic=topic,
                                    articles=articles,
                                    limit=limit))
+
+def article(request):
+    aid = _get(request, 'id')
+    if not aid:
+        return HttpResponseRedirect('/')
+    aid = int(aid)
+    article = db.get_article(aid)
+    if not article:
+        return HttpResponseRedirect('/')
+    article['source'] = db.get_source(article['source'])
+    article['topics'] = db.get_topics_by_article(aid)
+    log.debug(article)
+    return render_to_response('article.html', article)
+
+def _get(r, key):
+    return r.REQUEST[key] if key in r.REQUEST else None
+
