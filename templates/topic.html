@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>News - {{ topic }}</title>
+<title>新聞主題 - {{ topic }}</title>
 <link rel='stylesheet' href='s/style.css' type='text/css'/>
 <!-- google anlytics -->
 <script type="text/javascript">
@@ -21,20 +21,22 @@
 <body>
 
 <div class='container'>
-    <div class='home'><a href='/'>Home</a></div>
+    <div class='home'><a href='/'>回首頁</a></div>
     <div class='topic'>{{ topic }}</div>
     <div class='article_body'>
         <div class='article evenhead'>&nbsp;</div>
     {% for a in articles %}
         <div class='article {% cycle "odd" "even" %}'>
             <div class='date_title'>{{ a.created_date }}</div>
-            <div><a href='{{ a.url }}' target='_blank'>{{ a.title }}</a></div>
+            <div>
+                <a href='{{ a.url }}' target='_blank'>{{ a.title }}</a>
+                (<a href='article?id={{ a.id }}'>詳情</a>)
+            </div>
             <div><a href='{{ a.source_url }}' target='_blank'>{{ a.source }}</a></div>
             <div>{{ a.brief }}</div>
         </div>
     {% endfor %}
     <div style='clear:both'>&nbsp;</div>
-    </div>
     {% if limit %}
         <div class='showmore'>
             此頁僅顯示前 {{ limit }} 資料，按
@@ -42,7 +44,8 @@
             這裡</a> 顯示全部
         </div>
     {% endif %}
-    <div class='home'><a href='/'>Home</a></div>
+    <div class='home'><a href='/'>回首頁</a></div>
+    </div>
 </div>
 <div class='adsense'>
 </div>
