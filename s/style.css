@@ -11,6 +11,10 @@ a:hover {
     color: #4A4;
     text-decoration: underline;
 }
+a[target="_blank"] {
+    background: url('/s/open-in-new-window.png') center right no-repeat;
+    padding-right: 16px
+}
 
 .adsense {
     width: 300px;
@@ -59,14 +63,20 @@ background: #EFE;}
 
 .tag_1, .tag_2, .tag_3, .tag_4, .tag_5 { font-size: 10pt; }
 .tag_1 { color: #888; }
-.tag_2 { color: #000; }
-.tag_3 { color: #0CC; }
-.tag_4 { color: #F80; }
-.tag_5 { color: #F00; }
+.tag_2 { color: #444; }
+.tag_3 { color: #0CC; font-weight: bold; }
+.tag_4 { color: #F80; font-weight: bold; }
+.tag_5 { color: #F00; font-weight: bold; }
+
+.home {
+    text-align: center;
+    margin: 10px auto;
+    clear: both;
+}
 
 .container {
     margin: 10px auto;
-    width: 75%;
+    width: 60%;
     clear: both;
 }
 .topic {
@@ -107,9 +117,10 @@ background: #EFE;}
     text-align: center;
 }
 
-.home {
-    text-align: center;
-    margin: 10px auto;
-    clear: both;
-}
+.topic_item {
+    margin: 10px;
+    padding: 5px;
+    border: 1px dotted gray;
+    border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;
+    }
 </style>
