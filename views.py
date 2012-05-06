@@ -79,7 +79,8 @@ def article(request):
         return HttpResponseRedirect('/')
     article['source'] = db.get_source(article['source'])
     article['topics'] = db.get_topics_by_article(aid)
-    log.debug(article)
+    article['url'] = urllib.unquote(article['url'])
+    article['source']['url'] = urllib.unquote(article['source']['url'])
     return render_to_response('article.html', article)
 
 def _get(r, key):
