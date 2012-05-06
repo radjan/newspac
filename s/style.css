@@ -79,13 +79,22 @@ background: #EFE;}
     width: 60%;
     clear: both;
 }
-.topic {
+
+.topic_pad {
     font-weight: bold;
     padding: 20px;
     border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;
-    background: #CFC;
+    background: #CFC;}
+
+.topic {
+    width: 98%;
     text-align: center;}
 
+.topic_desc_item {
+    float: left;
+    padding: 2px 5px;
+    font-size: 14px;
+}
 .highlight {color: #F44;}
 
 .article_body {

@@ -23,7 +23,13 @@
 
 <div class='container'>
     <div class='home'><a href='/'>回首頁</a></div>
-    <div class='topic'>{{ topic }}</div>
+    <div class='topic_pad'>
+        <div class='topic'>{{ topic }}</div>
+        <div class='topic_desc_item'>
+            <a href='http://zh.wikipedia.org/wiki/{{ topic }}' target='_blank'>維基百科條目</a>
+        </div>
+        <div class='topic_desc_item'>主題相關性分析(coming soon)</div>
+    </div>
     <div class='article_body'>
         <div class='article evenhead'>&nbsp;</div>
     {% for a in articles %}
