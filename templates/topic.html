@@ -1,3 +1,4 @@
+{% load news_filters %}
 <html>
 <head>
 <title>新聞主題 - {{ topic }}</title>
@@ -29,11 +30,11 @@
         <div class='article {% cycle "odd" "even" %}'>
             <div class='date_title'>{{ a.created_date }}</div>
             <div>
-                <a href='{{ a.url }}' target='_blank'>{{ a.title }}</a>
+                <a href='{{ a.url }}' target='_blank'>{{ a.title|highlight:topic }}</a>
                 (<a href='article?id={{ a.id }}'>詳情</a>)
             </div>
             <div><a href='{{ a.source_url }}' target='_blank'>{{ a.source }}</a></div>
-            <div>{{ a.brief }}</div>
+            <div>{{ a.brief|highlight:topic }}</div>
         </div>
     {% endfor %}
     <div style='clear:both'>&nbsp;</div>

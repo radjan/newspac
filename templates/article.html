@@ -1,3 +1,4 @@
+{% load news_filters %}
 <html>
 <head>
 <title>新聞標題 - {{ title }}</title>
@@ -30,7 +31,7 @@
     {% for t in topics %}
         <div class='topic_item'>
             <div><a href='topic?topic={{ t.topic_title }}'>{{ t.topic_title }}</a></div>
-            <div>{{ t.brief }}</div>
+            <div>{{ t.brief|highlight:t.topic_title }}</div>
         </div>
     {% endfor %}
     <div class='home'><a href='/'>回首頁</a></div>

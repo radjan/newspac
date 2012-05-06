@@ -12,7 +12,7 @@ a:hover {
     text-decoration: underline;
 }
 a[target="_blank"] {
-    background: url('/s/open-in-new-window.png') center right no-repeat;
+    background: url('/s/open-in-new-window.png') top right no-repeat;
     padding-right: 16px
 }
 
@@ -85,6 +85,8 @@ background: #EFE;}
     border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;
     background: #CFC;
     text-align: center;}
+
+.highlight {color: #F44;}
 
 .article_body {
     background: url('/s/bg_line.png') repeat-y center;
