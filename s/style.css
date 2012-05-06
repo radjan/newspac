@@ -12,8 +12,8 @@ a:hover {
     text-decoration: underline;
 }
 a[target="_blank"] {
-    background: url('/s/open-in-new-window.png') top right no-repeat;
-    padding-right: 16px
+    background: url('/s/open-in-new-window.png') right no-repeat;
+    padding-right: 15px
 }
 
 .adsense {
