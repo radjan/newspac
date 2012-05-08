@@ -104,7 +104,7 @@ background: #EFE;}
 .article {
     border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;
     width: 48%;
-    margin: 20px 5px;}
+    margin: 20px 0px;}
 .odd {
     border: 1px solid gray;
     min-height: 190px;
