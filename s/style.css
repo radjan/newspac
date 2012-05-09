@@ -104,7 +104,11 @@ background: #EFE;}
 .article {
     border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;
     width: 48%;
+    height: 260px;
     margin: 20px 0px;}
+.article:hover {
+    background: #FFE;
+}
 .odd {
     border: 1px solid gray;
     min-height: 190px;
