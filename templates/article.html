@@ -20,7 +20,7 @@
 <!-- end of google anlytics -->
 </head>
 <body>
-
+{% include "head.html" %}
 <div class='container'>
     <div class='home'><a href='/'>回首頁</a></div>
     <div>新聞：<a href='{{ url }}' target='_blank'>{{ title }}</a></div>
@@ -38,5 +38,7 @@
 </div>
 <div class='adsense'>
 </div>
+
+{% include "footer.html" %}
 </body>
 </html>

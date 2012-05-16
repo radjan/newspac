@@ -21,7 +21,35 @@ a[target="_blank"] {
     margin: 0;
     padding: 0;}
 
-.footer { clear: both}
+.footer {
+    text-align: center;
+    margin: 0 auto;
+    padding: 5px 5px 20px;
+    clear: both}
+
+.head {
+    height: 80px;
+    padding: 0px;
+    margin: 0px;}
+.head .logo {
+    float: left;
+    height: 80px;
+    width: 120px;
+    padding: 0px;
+    margin: 0px;}
+
+.head .slogan,
+.head .name {
+    font-size: 24px;
+    float: left;
+    width: 50%;
+    padding: 2px;
+    margin: 0px;}
+.head .name {
+    padding-top: 5px;}
+.head .slogan {
+    padding-left: 25px;
+    font-size: 12px;}
 
 .page {
     width: 910px;
@@ -75,7 +103,7 @@ background: #EFE;}
 }
 
 .container {
-    margin: 10px auto;
+    margin: 0px auto;
     width: 60%;
     clear: both;
 }

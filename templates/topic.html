@@ -21,8 +21,9 @@
 </head>
 <body>
 
+{% include "head.html" %}
+
 <div class='container'>
-    <div class='home'><a href='/'>回首頁</a></div>
     <div class='topic_pad'>
         <div class='topic'>{{ topic }}</div>
         <div class='topic_desc_item'>
@@ -56,5 +57,6 @@
 </div>
 <div class='adsense'>
 </div>
+{% include "footer.html" %}
 </body>
 </html>

@@ -19,10 +19,10 @@
 <!-- end of google anlytics -->
 </head>
 <body>
+{% include "head.html" %}
 <div class='page'>
-
 <div class='pad'>
-    <div class='title'>收集到的主題</div>
+    <div class='title'>收集到的新聞主題</div>
     {% for topic in topics %}
     <div class='item'>
         <a href='topic?topic={{ topic.title }}'>
@@ -41,7 +41,8 @@
     </div>
 </div>
 
-<div class='footer'> </div>
+{% include "footer.html" %}
+
 </div>
 </body>
 </html>
