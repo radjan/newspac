@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 import sqlite3
 import atexit
-
+import datetime
 import traceback
 
 import common
 log = common.get_logger()
+
+DATE_FORMAT = '%Y-%m-%d %H:%M:%S'
 
 def log_entry(fn):
     def new_fn(*args, **kw):
@@ -155,7 +157,7 @@ def homepage_topics(cursor):
 
 @log_entry
 @transaction
-def list_articles_by_topic(cursor, topic_title, limit):
+def list_articles_by_topic(cursor, topic_title, limit=0):
     limit_cause = ''
     if limit > 0:
         limit_cause = ' limit %s' % limit
@@ -174,6 +176,40 @@ def list_articles_by_topic(cursor, topic_title, limit):
     cursor.execute(sql, (topic_title,))
     fetch = cursor.fetchall()
     return [dict(zip(cols, record)) for record in fetch]
+
+@log_entry
+@transaction
+def list_articles_by_topics(cursor, topics, limit=0):
+    if not topics:
+        return []
+    limit_cause = ''
+    if limit > 0:
+        limit_cause = ' LIMIT %s' % limit
+    cols = ['id', 'title', 'url', 'url_date', 'url_status', 'created',
+            'source', 'source_url', 'brief']
+    sql = '''
+          SELECT a.id, a.title, a.url, a.url_date, a.url_status, a.created,
+                 a.source, s.url, t_a_rel.brief
+          FROM article AS a 
+                 INNER JOIN topic_article_rel AS t_a_rel ON a.id = t_a_rel.article_id
+                 INNER JOIN source s ON a.source = s.name,
+                 (
+                    SELECT t_a_r.article_id AS aid, COUNT(1) AS amount
+                    FROM topic_article_rel As t_a_r
+                    WHERE t_a_r.topic_title IN (%s)
+                    GROUP BY aid
+                 ) AS aid_table 
+          WHERE
+                aid_table.aid = a.id
+                AND aid_table.amount = ?
+                AND t_a_rel.topic_title = ?
+          ORDER BY a.url_date DESC
+          ''' + limit_cause
+    sql = sql % ','.join(['?']*len(topics))
+    cursor.execute(sql, tuple(topics) + (len(topics), topics[0]))
+    fetch = cursor.fetchall()
+    return [dict(zip(cols, record)) for record in fetch]
+     
 
 @log_entry
 @transaction
@@ -202,3 +238,34 @@ def get_topics_by_article(cursor, aid):
     cursor.execute(sql, (aid,))
     fetch = cursor.fetchall()
     return [dict(zip(cols, row)) for row in fetch]
+
+@log_entry
+@transaction
+def get_related_topics(cursor, topic, start=None, end=None, limit=0):
+    start_cause = end_cause = limit_cause = ''
+    if start:
+        start_cause = ' AND a.url_date >= \'%s\'' % start.strftime(DATE_FORMAT)
+    if end:
+        end_cause = ' AND a.url_date <= \'%s\'' % end.strftime(DATE_FORMAT)
+    if limit > 0:
+        limit_cause = ' limit %s' % limit
+    sql = 'SELECT t_a_r2.topic_title, COUNT(1) as count'\
+          ' FROM '\
+          ' topic_article_rel AS t_a_r1 '\
+          ' INNER JOIN topic_article_rel AS t_a_r2 ON'\
+          '     t_a_r1.article_id = t_a_r2.article_id'\
+          ' INNER JOIN article AS a ON'\
+          '     t_a_r1.article_id = a.id'\
+          ' WHERE '\
+          '     t_a_r1.topic_title = ?'\
+          '     AND t_a_r2.topic_title != ?'\
+          + start_cause + end_cause + \
+          ' GROUP BY t_a_r2.topic_title'\
+          ' ORDER BY count DESC'\
+          + limit_cause
+    cursor.execute(sql, (topic, topic))
+    return cursor.fetchall()
+
+
+
+
