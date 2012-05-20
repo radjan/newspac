@@ -19,10 +19,9 @@
 </script>
 <!-- end of google anlytics -->
 </head>
-<body>
+<body class='article_page'>
 {% include "head.html" %}
 <div class='container'>
-    <div class='home'><a href='/'>回首頁</a></div>
     <div>新聞：<a href='{{ url }}' target='_blank'>{{ title }}</a></div>
     <div>來源：<a href='{{ source.url }}' target='_blank'>{{ source.name }}</a></div>
     <div>擷取時間：{{ url_date }}</div>
@@ -35,10 +34,12 @@
         </div>
     {% endfor %}
     <div class='home'><a href='/'>回首頁</a></div>
+    </div>
 </div>
-<div class='adsense'>
+<div class='col'>
+    <div class='adsense'>
+    </div>
 </div>
-
 {% include "footer.html" %}
 </body>
 </html>

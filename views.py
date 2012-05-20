@@ -40,8 +40,8 @@ def _get_indexes(clist):
     return [clist[seg_10], clist[seg_35], clist[-seg_35], clist[-seg_10]]
 
 def topic(request):
-    topic = _get(request, 'topic')
-    if not topic:
+    topics_str = _get(request, 'topic')
+    if not topics_str:
         return HttpResponseRedirect('/')
 
     limit = _get(request, 'limit')
@@ -60,14 +60,25 @@ def topic(request):
         a['url'] = urllib.unquote(a['url'])
         a['source_url'] = urllib.unquote(a['source_url'])
         return a
-        
-    articles = db.list_articles_by_topic(topic, limit)
+    topics = topics_str.split(common.TOPIC_SEPARATOR)
+    if len(topics) == 1:
+        articles = db.list_articles_by_topic(topics[0], limit)
+        related_topics = db.get_related_topics(topics[0], limit=10)
+        for item in related_topics:
+            item['q'] = topics_str + common.TOPIC_SEPARATOR + item['title']
+    else:
+        articles = db.list_articles_by_topics(topics, limit)
+        related_topics = []
     articles = [_process_row(a) for a in articles]
     limit = limit if len(articles) == limit else 0
+
     return render_to_response('topic.html',
-                              dict(topic=topic,
+                              dict(topics=topics,
+                                   topic=topics_str,
+                                   highlight_pattern='|'.join(topics),
                                    articles=articles,
-                                   limit=limit))
+                                   limit=limit,
+                                   related_topics=related_topics))
 
 def article(request):
     aid = _get(request, 'id')

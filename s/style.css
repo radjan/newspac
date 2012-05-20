@@ -17,8 +17,10 @@ a[target="_blank"] {
 }
 
 .adsense {
+    border: 1px dotted gray;
     width: 300px;
-    margin: 0;
+    height: 250px;
+    margin: 5px 0;
     padding: 0;}
 
 .footer {
@@ -70,13 +72,12 @@ a[target="_blank"] {
     float: left;
 }
 
-.title {
+.pad .title {
     padding: 5px;
     text-align: center;
-    //clear: both;
 }
 
-.item {
+.pad .item {
     vertical-align: text-bottom;
     width: 120px;
     height: 18px;
@@ -86,7 +87,7 @@ a[target="_blank"] {
     border: 1px dotted gray;
     border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;
 }
-.item:hover {
+.pad .item:hover {
 background: #EFE;}
 
 .tag_1, .tag_2, .tag_3, .tag_4, .tag_5 { font-size: 10pt; }
@@ -103,9 +104,10 @@ background: #EFE;}
 }
 
 .container {
-    margin: 0px auto;
+    float: left;
+    margin: 0px;
+    padding: 0px 5px;
     width: 60%;
-    clear: both;
 }
 
 .topic_pad {
@@ -113,13 +115,21 @@ background: #EFE;}
     padding: 20px;
     border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;
     background: #CFC;}
+.topic_pad:after { 
+   content: ".";
+   visibility: hidden;
+   display: block;
+   height: 0;
+   clear: both;}
 
-.topic {
+.topic_pad .topic_item{
+    float: left;
+    width: auto;}
+.topic_pad .topic {
     width: 98%;
     text-align: center;}
 
-.topic_desc_item {
-    float: left;
+.topic_pad .topic_desc_item {
     padding: 2px 5px;
     font-size: 14px;
 }
@@ -158,7 +168,15 @@ background: #EFE;}
 
 .showmore {
     text-align: center;
+    clear: both;
 }
+
+.right_panel {
+    width: 300px;
+    padding: 5px;
+}
+.right_panel .item {
+    padding: 2px 10px;}
 
 .topic_item {
     margin: 10px;

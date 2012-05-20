@@ -24,12 +24,16 @@
 {% include "head.html" %}
 
 <div class='container'>
-    <div class='topic_pad'>
-        <div class='topic'>{{ topic }}</div>
-        <div class='topic_desc_item'>
-            <a href='http://zh.wikipedia.org/wiki/{{ topic }}' target='_blank'>維基百科條目</a>
+   <div class='topic_pad'>
+   {% for topic in topics %} 
+        <div class='topic_item'>
+            <div class='topic'>{{ topic }}</div>
+            <div class='topic_desc_item'>
+                <a href='http://zh.wikipedia.org/wiki/{{ topic }}' target='_blank'>維基百科條目</a>
+            </div>
+            <div class='topic_desc_item'>相關主題(coming soon)</div>
         </div>
-        <div class='topic_desc_item'>相關主題(coming soon)</div>
+    {% endfor %}
     </div>
     <div class='article_body'>
         <div class='article evenhead'>&nbsp;</div>
@@ -37,14 +41,13 @@
         <div class='article {% cycle "odd" "even" %}'>
             <div class='date_title'>{{ a.created_date }}</div>
             <div>
-                <a href='{{ a.url }}' target='_blank'>{{ a.title|highlight:topic }}</a>
+                <a href='{{ a.url }}' target='_blank'>{{ a.title|highlight:highlight_pattern }}</a>
                 (<a href='article?id={{ a.id }}'>詳情</a>)
             </div>
             <div><a href='{{ a.source_url }}' target='_blank'>{{ a.source }}</a></div>
-            <div>{{ a.brief|highlight:topic }}</div>
+            <div>{{ a.brief|highlight:highlight_pattern }}</div>
         </div>
     {% endfor %}
-    <div style='clear:both'>&nbsp;</div>
     {% if limit %}
         <div class='showmore'>
             此頁僅顯示前 {{ limit }} 資料，按
@@ -55,7 +58,20 @@
     <div class='home'><a href='/'>回首頁</a></div>
     </div>
 </div>
-<div class='adsense'>
+<div class='col'>
+    <div class='adsense'>
+
+    </div>
+    {% if related_topics %}
+    <div class='right_panel'>
+    <div>相關新聞主題</div>
+    {% for t in related_topics %}
+        <div class='item'>
+        <a href='?topic={{ t.q }}'>[+] {{ t.title }}</a> ({{ t.amount }})
+        </div>
+    {% endfor %}
+    </div>
+    {% endif %}
 </div>
 {% include "footer.html" %}
 </body>
