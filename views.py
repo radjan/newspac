@@ -19,9 +19,7 @@ def _add_level(datalist):
         item['level'] = lv
     cand_list = [value_fn(item) for item in datalist]
     cand_list = sorted(cand_list)
-    log.debug(cand_list)
     idxs = _get_indexes(cand_list)
-    log.debug(idxs)
     for item in datalist:
         is_set = False
         for i in range(len(idxs)):
@@ -71,7 +69,6 @@ def topic(request):
     related_topics = db.get_related_topics(topics, limit=10)
     for item in related_topics:
         item['q'] = topics_str + common.TOPIC_SEPARATOR + item['title']
-
     return render_to_response('topic.html',
                               dict(topics=topics,
                                    topic=topics_str,

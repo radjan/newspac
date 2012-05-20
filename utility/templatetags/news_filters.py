@@ -7,6 +7,8 @@ register = template.Library()
 def highlight(text, pattern):
     words = pattern.split('|')
     for word in words:
+        if not word:
+            continue
         text = text.replace(word, "<span class='highlight'>%s</span>" % word)
     return mark_safe(text)
 #highlight.is_safe = True
