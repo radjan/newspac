@@ -249,22 +249,27 @@ def get_related_topics(cursor, topic, start=None, end=None, limit=0):
         end_cause = ' AND a.url_date <= \'%s\'' % end.strftime(DATE_FORMAT)
     if limit > 0:
         limit_cause = ' limit %s' % limit
-    sql = 'SELECT t_a_r2.topic_title, COUNT(1) as count'\
-          ' FROM '\
-          ' topic_article_rel AS t_a_r1 '\
-          ' INNER JOIN topic_article_rel AS t_a_r2 ON'\
-          '     t_a_r1.article_id = t_a_r2.article_id'\
-          ' INNER JOIN article AS a ON'\
-          '     t_a_r1.article_id = a.id'\
-          ' WHERE '\
-          '     t_a_r1.topic_title = ?'\
-          '     AND t_a_r2.topic_title != ?'\
-          + start_cause + end_cause + \
-          ' GROUP BY t_a_r2.topic_title'\
-          ' ORDER BY count DESC'\
-          + limit_cause
+    sql = '''
+           SELECT t_a_r2.topic_title, COUNT(1) as count
+           FROM 
+           topic_article_rel AS t_a_r1 
+           INNER JOIN topic_article_rel AS t_a_r2 ON
+               t_a_r1.article_id = t_a_r2.article_id
+           INNER JOIN article AS a ON
+               t_a_r1.article_id = a.id
+           WHERE 
+               t_a_r1.topic_title = ?
+               AND t_a_r2.topic_title != ?
+         '''\
+         + start_cause + end_cause + \
+         '''
+           GROUP BY t_a_r2.topic_title
+           ORDER BY count DESC
+         '''\
+         + limit_cause
     cursor.execute(sql, (topic, topic))
-    return cursor.fetchall()
+    cols = ['title', 'amount']
+    return [dict(zip(cols, row)) for row in cursor.fetchall()]
 
 
 
