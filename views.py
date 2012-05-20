@@ -63,14 +63,14 @@ def topic(request):
     topics = topics_str.split(common.TOPIC_SEPARATOR)
     if len(topics) == 1:
         articles = db.list_articles_by_topic(topics[0], limit)
-        related_topics = db.get_related_topics(topics[0], limit=10)
-        for item in related_topics:
-            item['q'] = topics_str + common.TOPIC_SEPARATOR + item['title']
     else:
         articles = db.list_articles_by_topics(topics, limit)
-        related_topics = []
     articles = [_process_row(a) for a in articles]
     limit = limit if len(articles) == limit else 0
+
+    related_topics = db.get_related_topics(topics, limit=10)
+    for item in related_topics:
+        item['q'] = topics_str + common.TOPIC_SEPARATOR + item['title']
 
     return render_to_response('topic.html',
                               dict(topics=topics,
