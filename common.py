@@ -13,6 +13,9 @@ DB_PATH = DB_DIR + '/newspacks.db'
 MB = 1024 * 1024
 LOG_ROOT = '/var/log/newspack/'
 
+TOPIC_SEPARATOR = '_-_'
+DISPLAY_SEPARATOR = '|'
+
 def mv_log(*log_fns):
     fn = log_fns[1]
     if os.path.exists(fn) and os.path.getsize(fn) == 0:
