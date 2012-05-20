@@ -75,7 +75,7 @@ def topic(request):
     return render_to_response('topic.html',
                               dict(topics=topics,
                                    topic=topics_str,
-                                   highlight_pattern='|'.join(topics),
+                                   highlight_pattern='|'.join(topics) if len(topics) > 1 else topics[0],
                                    articles=articles,
                                    limit=limit,
                                    related_topics=related_topics))
