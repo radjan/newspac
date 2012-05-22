@@ -25,13 +25,17 @@
 
 <div class='container'>
    <div class='topic_pad'>
-   {% for topic in topics %} 
+   {% for topic_dict in topics %} 
         <div class='topic_item'>
-            <div class='topic'>{{ topic }}</div>
+            <div class='topic'>{{ topic_dict.topic }}</div>
             <div class='topic_desc_item'>
                 <a href='http://zh.wikipedia.org/wiki/{{ topic }}' target='_blank'>維基百科條目</a>
             </div>
             <div class='topic_desc_item'>相關主題(coming soon)</div>
+            {% if topic_dict.rm_q %}
+            <div class='topic_desc_item'><a href='?topic={{ topic_dict.rm_q }}'>
+                [-] 移除此主題</a></div>
+            {% endif %}
         </div>
     {% endfor %}
     </div>

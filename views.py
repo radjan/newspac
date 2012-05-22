@@ -53,26 +53,36 @@ def topic(request):
         except Exception:
             limit = 100
 
+    def _join_topic_str(topics, separator):
+       return separator.join(topics) if len(topics) > 1 else topics[0] 
+
+    topics = topics_str.split(common.TOPIC_SEPARATOR)
+    topic_dicts = [dict(topic=t, rm_q='') for t in topics]
+    if len(topics) == 1:
+        articles = db.list_articles_by_topic(topics[0], limit)
+    else:
+        articles = db.list_articles_by_topics(topics, limit)
+        for topic_dict in topic_dicts:
+            tmp_topics = topics[:]
+            tmp_topics.remove(topic_dict['topic'])
+            topic_dict['rm_q'] = _join_topic_str(tmp_topics,
+                                                 common.TOPIC_SEPARATOR)
     def _process_row(a):
         a['created_date'] = a['created'][:10] #.timepstr('%Y-%M-%D')
         a['url'] = urllib.unquote(a['url'])
         a['source_url'] = urllib.unquote(a['source_url'])
         return a
-    topics = topics_str.split(common.TOPIC_SEPARATOR)
-    if len(topics) == 1:
-        articles = db.list_articles_by_topic(topics[0], limit)
-    else:
-        articles = db.list_articles_by_topics(topics, limit)
     articles = [_process_row(a) for a in articles]
     limit = limit if len(articles) == limit else 0
 
     related_topics = db.get_related_topics(topics, limit=10)
     for item in related_topics:
         item['q'] = topics_str + common.TOPIC_SEPARATOR + item['title']
+    highlight_pattern=_join_topic_str(topics, common.DISPLAY_SEPARATOR)
     return render_to_response('topic.html',
-                              dict(topics=topics,
+                              dict(topics=topic_dicts,
                                    topic=topics_str,
-                                   highlight_pattern='|'.join(topics) if len(topics) > 1 else topics[0],
+                                   highlight_pattern=highlight_pattern,
                                    articles=articles,
                                    limit=limit,
                                    related_topics=related_topics))
