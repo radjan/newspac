@@ -111,6 +111,7 @@ background: #EFE;}
 }
 
 .topic_pad {
+    text-align: center;
     font-weight: bold;
     padding: 20px;
     border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;
