@@ -2,6 +2,8 @@ import urllib
 from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect, HttpResponse
 
+import datetime
+
 import database as db
 import common
 log = common.get_logger()
@@ -53,8 +55,6 @@ def topic(request):
         except Exception:
             limit = 100
 
-    def _join_topic_str(topics, separator):
-       return separator.join(topics) if len(topics) > 1 else topics[0] 
 
     topics = topics_str.split(common.TOPIC_SEPARATOR)
     topic_dicts = [dict(topic=t, rm_q='') for t in topics]
@@ -101,6 +101,54 @@ def article(request):
     article['source']['url'] = urllib.unquote(article['source']['url'])
     return render_to_response('article.html', article)
 
+def topic_ana(request):
+    topics_str = _get(request, 'topic')
+    if not topics_str:
+        return HttpResponseRedirect('/')
+    topics = topics_str.split(common.TOPIC_SEPARATOR)
+    topic_dicts = [dict(topic=t, rm_q='') for t in topics]
+    if len(topics) > 1:
+        for topic_dict in topic_dicts:
+            tmp_topics = topics[:]
+            tmp_topics.remove(topic_dict['topic'])
+            topic_dict['rm_q'] = _join_topic_str(tmp_topics,
+                                                 common.TOPIC_SEPARATOR)
+    related_topics = db.get_related_topics(topics)
+    all_amount = db.get_articles_amount_by_topics(topics)
+    for item in related_topics:
+        item['q'] = topics_str + common.TOPIC_SEPARATOR + item['title']
+        item['percentage'] = 100* item['amount'] / all_amount
+        if item['percentage'] ==0:
+            item['percentage'] = 1
+
+    start = _shift_datetime(_truncate_day(datetime.datetime.now()))
+    all_7d_amount = db.get_articles_amount_by_topics(topics, start=start)
+    related_7d_topics = db.get_related_topics(topics, start=start)
+    for item in related_7d_topics:
+        item['q'] = topics_str + common.TOPIC_SEPARATOR + item['title']
+        item['percentage'] = 100* item['amount'] / all_7d_amount
+        if item['percentage'] ==0:
+            item['percentage'] = 1
+
+    return render_to_response('topic_analytics.html',
+                              dict(topics=topic_dicts,
+                                   topic=topics_str,
+                                   all_7d_amount=all_7d_amount,
+                                   related_7d_topics=related_7d_topics,
+                                   all_amount=all_amount,
+                                   related_topics=related_topics))
+
 def _get(r, key):
     return r.REQUEST[key] if key in r.REQUEST else None
 
+def _truncate_day(dt):
+    return datetime.datetime(dt.year, dt.month, dt.day)
+
+def _shift_datetime(dt, days=0, hours=0, minutes=0, seconds=0):
+    return dt + datetime.timedelta(days=days,
+                                   hours=hours,
+                                   minutes=minutes,
+                                   seconds=seconds)
+
+def _join_topic_str(topics, separator):
+   return separator.join(topics) if len(topics) > 1 else topics[0] 

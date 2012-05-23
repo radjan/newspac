@@ -31,7 +31,9 @@
             <div class='topic_desc_item'>
                 <a href='http://zh.wikipedia.org/wiki/{{ topic }}' target='_blank'>維基百科</a>
             </div>
-            <div class='topic_desc_item'>相關主題(coming soon)</div>
+            <div class='topic_desc_item'>
+                <a href='topic_ana?topic={{ topic  }}'>相關主題</a>
+            </div>
             {% if topic_dict.rm_q %}
             <div class='topic_desc_item'><a href='?topic={{ topic_dict.rm_q }}'>
                 [-] 移除此條件</a></div>

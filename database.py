@@ -303,3 +303,64 @@ def get_related_topics(cursor, topics, start=None, end=None, limit=0):
     cols = ['title', 'amount']
     return [dict(zip(cols, row)) for row in cursor.fetchall()]
 
+@log_entry
+@transaction
+def get_articles_amount_by_topics(cursor, topics, start=None, end=None, limit=0):
+    start_cause = end_cause = limit_cause = ''
+    if start:
+        start_cause = ' AND a.url_date >= \'%s\'' % start.strftime(DATE_FORMAT)
+    if end:
+        end_cause = ' AND a.url_date <= \'%s\'' % end.strftime(DATE_FORMAT)
+    if limit > 0:
+        limit_cause = ' limit %s' % limit
+    if len(topics) > 1:
+        sql = '''
+               SELECT COUNT(DISTINCT t_a_r1.article_id) as count
+               FROM 
+                topic_article_rel AS t_a_r1 
+               INNER JOIN article AS a ON
+                   t_a_r1.article_id = a.id
+               INNER JOIN topic_article_rel AS t_a_r2 ON
+                   t_a_r1.article_id = t_a_r2.article_id,
+               (
+                   SELECT t_a_r.article_id AS aid, COUNT(1) AS amount
+                   FROM topic_article_rel As t_a_r
+                   WHERE t_a_r.topic_title IN (%s)
+                   GROUP BY aid
+               ) AS aid_table 
+               WHERE 
+                   aid_table.amount = ?
+                   AND t_a_r1.article_id = aid_table.aid
+                   AND t_a_r1.topic_title IN (%s)
+                   AND t_a_r2.topic_title NOT IN (%s)
+             '''\
+             + start_cause + end_cause + \
+             '''
+               ORDER BY count DESC
+             '''\
+             + limit_cause
+        sql = sql % ((','.join(['?'] * len(topics)),) * 3)
+        topics_tuple = tuple(topics)
+        cursor.execute(sql, topics_tuple + (len(topics_tuple),) + topics_tuple + topics_tuple)
+    else:
+        topic = topics[0]
+        sql = '''
+              SELECT COUNT(1) as count
+               FROM 
+               topic_article_rel AS t_a_r1 
+               INNER JOIN topic_article_rel AS t_a_r2 ON
+                   t_a_r1.article_id = t_a_r2.article_id
+               INNER JOIN article AS a ON
+                   t_a_r1.article_id = a.id
+               WHERE 
+                   t_a_r1.topic_title = ?
+                   AND t_a_r2.topic_title != ?
+              '''\
+              + start_cause + end_cause + \
+              '''
+               ORDER BY count DESC
+              '''\
+              + limit_cause
+        cursor.execute(sql, (topic, topic))
+    return cursor.fetchone()[0]
+

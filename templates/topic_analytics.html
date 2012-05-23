@@ -1,0 +1,73 @@
+{% load news_filters %}
+<html>
+<head>
+<title>新聞主題 - {{ topic }}</title>
+<link rel='stylesheet' href='s/style.css' type='text/css'/>
+<!-- google anlytics -->
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-31427257-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<!-- end of google anlytics -->
+</head>
+<body>
+
+{% include "head.html" %}
+
+<div class='container'>
+   <div class='topic_pad'>
+   {% for topic_dict in topics %} 
+        <div class='topic_item'>
+            <div class='topic'>
+                <a href='topic?topic={{topic_dict.topic}}'>{{ topic_dict.topic }}</a>
+            </div>
+            <div class='topic_desc_item'>
+                <a href='http://zh.wikipedia.org/wiki/{{ topic }}' target='_blank'>維基百科</a>
+            </div>
+            {% if topic_dict.rm_q %}
+            <div class='topic_desc_item'><a href='?topic={{ topic_dict.rm_q }}'>
+                [-] 移除此條件</a></div>
+            {% endif %}
+        </div>
+    {% endfor %}
+    </div>
+    <div class='ana_body'>
+        <div class='ana_col'>
+        <div>所有相關新聞主題 ({{ all_amount }})</div>
+        {% for t in related_topics %}
+            <div class='item'>
+            <div class='title_amt'><a href='?topic={{ t.q }}'>[+] {{ t.title }}</a> ({{ t.amount }})</div>
+            <div class='percent'>{{ t.percentage }}%</div>
+            <div class='bar'><div class='ana_bar' style='width:{{t.percentage}}%;'>&nbsp;</div></div>
+            </div>
+        {% endfor %}
+        </div>
+        <div class='ana_col'>
+        <div>七日內相關新聞主題 ({{ all_7d_amount }})</div>
+        {% for t in related_7d_topics %}
+            <div class='item'>
+            <div class='title_amt'><a href='?topic={{ t.q }}'>[+] {{ t.title }}</a> ({{ t.amount }})</div>
+            <div class='percent'>{{ t.percentage }}%</div>
+            <div class='bar'><div class='ana_bar' style='width:{{t.percentage}}%;'>&nbsp;</div></div>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+</div>
+<div class='col'>
+    <div class='adsense'>
+
+    </div>
+</div>
+{% include "footer.html" %}
+</body>
+</html>

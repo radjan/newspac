@@ -185,4 +185,34 @@ background: #EFE;}
     border: 1px dotted gray;
     border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;
     }
-</style>
+
+/* analytics */
+.ana_col {
+    float: left;
+    width: 48%;
+}
+.ana_col .item {
+    clear: both;
+    margin: 2px;
+    padding: 2px;
+    border-bottom: 1px dotted gray;
+}
+.ana_col .item:after { 
+   content: ".";
+   visibility: hidden;
+   display: block;
+   height: 0;
+   clear: both;}
+.ana_col .item .title_amt {
+    width: 150px;
+    float: left;}
+.ana_col .item .percent {
+    text-align: right;
+    width: 40px;
+    float: left;}
+.ana_col .item .bar {
+    width: 140px;
+    float: left;}
+.ana_bar {
+    background: #800;
+}
