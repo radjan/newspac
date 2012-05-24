@@ -45,7 +45,8 @@
         <div>所有相關新聞主題 ({{ all_amount }})</div>
         {% for t in related_topics %}
             <div class='item'>
-            <div class='title_amt'><a href='?topic={{ t.q }}'>[+] {{ t.title }}</a> ({{ t.amount }})</div>
+            <div class='title_amt'><a href='?topic={{t.q}}'>[+]</a> {{ t.title }}
+                (<a href='topic?topic={{t.q}}'>{{ t.amount }}</a>)</div>
             <div class='percent'>{{ t.percentage }}%</div>
             <div class='bar'><div class='ana_bar' style='width:{{t.percentage}}%;'>&nbsp;</div></div>
             </div>
@@ -55,7 +56,8 @@
         <div>七日內相關新聞主題 ({{ all_7d_amount }})</div>
         {% for t in related_7d_topics %}
             <div class='item'>
-            <div class='title_amt'><a href='?topic={{ t.q }}'>[+] {{ t.title }}</a> ({{ t.amount }})</div>
+            <div class='title_amt'><a href='?topic={{t.q}}'>[+]</a> {{ t.title }}
+                (<a href='topic?topic={{t.q}}'>{{ t.amount }}</a>)</div>
             <div class='percent'>{{ t.percentage }}%</div>
             <div class='bar'><div class='ana_bar' style='width:{{t.percentage}}%;'>&nbsp;</div></div>
             </div>
