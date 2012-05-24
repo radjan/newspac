@@ -121,7 +121,7 @@ def topic_ana(request):
         if item['percentage'] ==0:
             item['percentage'] = 1
 
-    start = _shift_datetime(_truncate_day(datetime.datetime.now()))
+    start = _shift_datetime(_truncate_day(datetime.datetime.now()), days=-7)
     all_7d_amount = db.get_articles_amount_by_topics(topics, start=start)
     related_7d_topics = db.get_related_topics(topics, start=start)
     for item in related_7d_topics:
