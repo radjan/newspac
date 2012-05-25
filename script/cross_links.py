@@ -31,7 +31,7 @@ count = 0
 for t in topics:
     for aid, a in articles.items():
         if t not in a['topics']:
-            if t in a['title'] or t in a['brief']:
+            if t.lower() in a['title'].lower() or t.lower() in a['brief'].lower():
                 db.insert_or_update_t_a_rel(t, aid, a['brief'])
                 count += 1
 conn.commit()
