@@ -30,13 +30,14 @@ a[target="_blank"] {
     clear: both}
 
 .head {
-    height: 80px;
+    height: 60px;
     padding: 0px;
     margin: 0px;}
 .head .logo {
+    background: url('/s/logo.png') left top no-repeat;
     float: left;
-    height: 80px;
-    width: 120px;
+    height: 60px;
+    width: 60px;
     padding: 0px;
     margin: 0px;}
 
