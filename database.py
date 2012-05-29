@@ -267,8 +267,7 @@ def get_related_topics(cursor, topics, start=None, end=None, limit=0):
                WHERE 
                    aid_table.amount = ?
                    AND t_a_r1.article_id = aid_table.aid
-                   AND t_a_r1.topic_title IN (%s)
-                   AND t_a_r2.topic_title NOT IN (%s)
+                   AND t_a_r1.topic_title = ?
              '''\
              + start_cause + end_cause + \
              '''
@@ -276,9 +275,9 @@ def get_related_topics(cursor, topics, start=None, end=None, limit=0):
                ORDER BY count DESC
              '''\
              + limit_cause
-        sql = sql % ((','.join(['?'] * len(topics)),) * 3)
+        sql = sql % (','.join(['?'] * len(topics)),)
         topics_tuple = tuple(topics)
-        cursor.execute(sql, topics_tuple + (len(topics_tuple),) + topics_tuple + topics_tuple)
+        cursor.execute(sql, topics_tuple + (len(topics_tuple), topics_tuple[0]))
     else:
         topic = topics[0]
         sql = '''
