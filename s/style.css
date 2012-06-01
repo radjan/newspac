@@ -12,7 +12,7 @@ a:hover {
     text-decoration: underline;
 }
 a[target="_blank"] {
-    background: url('/s/open-in-new-window.png') right no-repeat;
+    background: url('/s/extlink.gif') right no-repeat;
     padding-right: 15px
 }
 
