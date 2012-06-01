@@ -4,7 +4,7 @@ body {
 }
 a,
 a:visited {
-    color: #48C;
+    color: #008;
     text-decoration: none;
 }
 a:hover {
@@ -116,7 +116,7 @@ background: #EFE;}
     font-weight: bold;
     padding: 20px;
     border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;
-    background: #CFC;}
+    background: #EFE;}
 .topic_pad:after { 
    content: ".";
    visibility: hidden;
@@ -143,6 +143,8 @@ background: #EFE;}
     padding: 0px;}
 .article {
     border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;
+    overflow: hidden;
+    color: #888;
     width: 48%;
     height: 260px;
     margin: 20px 0px;}
@@ -150,11 +152,11 @@ background: #EFE;}
     background: #FFE;
 }
 .odd {
-    border: 1px solid gray;
+    border: 1px dotted gray;
     min-height: 190px;
     float: left;}
 .even {
-    border: 1px solid gray;
+    border: 1px dotted gray;
     min-height: 190px;
     float: right;}
 .evenhead {
