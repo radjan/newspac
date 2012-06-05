@@ -1,0 +1,86 @@
+<html>
+<head>
+<title>小工具 - 電費試算新聞主題</title>
+<link rel='stylesheet' href='s/style.css' type='text/css'/>
+<!-- google anlytics -->
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-31427257-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<!-- end of google anlytics -->
+</head>
+<body>
+
+{% include "head.html" %}
+<div class='container'>
+
+{% if deg %}
+你輸入 {{selected.charge_type}}用電 {{ selected.phase }} 的 {{ selected.season }}
+<br/>用電度數：{{ deg }}, 帳單金額：{{ price }}, 計算公式：{% for item in formula %} {{item.0}}*{{item.1}} {% if not forloop.last %} + {% endif %} {% endfor %}
+{% endif %}
+
+{% if results %}
+<div style='margin:15px 2px;'>
+各階段金額比較一覽表
+<table border=1>
+<tr>
+    <td>階段</td><td>季節</td><td>實施時間</td><td>使用度數</td><td>帳單金額</td><td>計算公式</td>
+</tr><tr>
+    <td rowspan=2>漲價前</td><td>非夏月</td><td>--</td>
+    <td rowspan=6>{{deg}}</td><td>{{results.0.0}}</td>
+    <td>{% for item in results.0.1 %} {{item.0}}*<span style='color:#800'>{{item.1}}</span> {% if not forloop.last %} + {% endif %} {% endfor %}
+</tr><tr>
+    <td>夏月</td><td>2012/6/1</td>
+    <td>{{results.1.0}}</td>
+    <td>{% for item in results.1.1 %} {{item.0}}*<span style='color:#800'>{{item.1}}</span> {% if not forloop.last %} + {% endif %} {% endfor %}
+</tr><tr>
+    <td rowspan=2>第一階段<br/>調漲</td><td>非夏月</td><td>2012/10/1</td>
+    <td>{{results.2.0}}</td>
+    <td>{% for item in results.2.1 %} {{item.0}}*<span style='color:#800'>{{item.1}}</span> {% if not forloop.last %} + {% endif %} {% endfor %}
+</tr><tr>
+    <td>夏月</td><td>2012/6/10</td>
+    <td>{{results.3.0}}</td>
+    <td>{% for item in results.3.1 %} {{item.0}}*<span style='color:#800'>{{item.1}}</span> {% if not forloop.last %} + {% endif %} {% endfor %}
+</tr><tr>
+    <td rowspan=2>第二階段<br/>調漲</td><td>非夏月</td><td>2012/12/20</td>
+    <td>{{results.4.0}}</td>
+    <td>{% for item in results.4.1 %} {{item.0}}*<span style='color:#800'>{{item.1}}</span> {% if not forloop.last %} + {% endif %} {% endfor %}
+</tr><tr>
+    <td>夏月</td><td>2013/6/1*</td>
+    <td>{{results.5.0}}</td>
+    <td>{% for item in results.5.1 %} {{item.0}}*<span style='color:#800'>{{item.1}}</span> {% if not forloop.last %} + {% endif %} {% endfor %}
+</table>
+* 若第三階段沒漲的話
+</div>
+{% endif %}
+
+<form action="/power_price" method="post" style='border: 1px dashed gray; padding: 5px;'>{% csrf_token %}
+{{ form.as_p }}
+<input type="submit" value="試算!" />
+</form>
+
+<div style='padding: 10px; border: 1px dotted #CCC; color: #888'>
+對試算金額有疑問的請先看這裡！
+<br/>* 為求接近大家拿到的帳單，試算範圍皆為雙月，與政府發佈試算多以單月用電度不一樣。
+<br/>* 因四捨五入的關係，所以數字可能會有個位數上的差異，
+<br/>* 若發現計算公式有任何問題，歡迎不吝寫信至下方email指教(尤其是營用電)
+</div>
+
+</div>
+<div class='col'>
+    <div class='adsense'>
+
+    </div>
+</div>
+{% include "footer.html" %}
+</body>
+</html>

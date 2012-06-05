@@ -1,12 +1,18 @@
+#! /bin/env python
+# -*- coding: utf-8 -*-
 import urllib
 from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect, HttpResponse
+from django import forms
+from django.core.context_processors import csrf
 
 import datetime
 
 import database as db
 import common
 log = common.get_logger()
+
+import power_price as p_p
 
 def index(request):
     topics = db.homepage_topics()
@@ -152,3 +158,48 @@ def _shift_datetime(dt, days=0, hours=0, minutes=0, seconds=0):
 
 def _join_topic_str(topics, separator):
    return separator.join(topics) if len(topics) > 1 else topics[0] 
+
+class PowerForm(forms.Form):
+    num = forms.DecimalField(label = u'用電度數或是帳單金額（雙月）')
+    deg_or_price = forms.ChoiceField([('price', u'帳單金額'), ('deg', u'用電度數')], label = u'選擇用電度數或是帳單金額')
+    charge_type = forms.ChoiceField([(p_p.HOME, u'住家'), (p_p.BUSSINESS, u'營業')], label=u'用電類型')
+    season = forms.ChoiceField([(p_p.NORMAL, u'非夏月用電'), (p_p.SUMMER, u'夏月用電')], label=u'用電季節')
+    phase = forms.ChoiceField([(p_p.ORI, u'漲價前電價'), (p_p.PH1, u'第一階段調漲'), (p_p.PH2, u'第二階段調漲')], label = u'電價')
+    
+def power_price(request):
+    deg = price = 0
+    formula = results = []
+    selected = {}
+    if request.method == 'POST':
+        form = PowerForm(request.POST, request.FILES)
+        if form.is_valid():
+            deg_or_price = form.cleaned_data['deg_or_price']
+            charge_type = int(form.cleaned_data['charge_type'])
+            season = str(form.cleaned_data['season'])
+            phase = int(form.cleaned_data['phase'])
+            num= form.cleaned_data['num']
+            if deg_or_price == 'deg':
+                deg = num
+                price, formula = p_p.deg2price(deg, charge_type, season, phase)
+            else:
+                price = num 
+                deg, formula = p_p.price2deg(price, charge_type, season, phase)
+                deg = int(deg)
+            for phase in [p_p.ORI, p_p.PH1, p_p.PH2]:
+                for season in [p_p.NORMAL, p_p.SUMMER]:
+                    results.append(p_p.deg2price(deg, charge_type, season, phase))
+            selected['season'] = dict(form.fields['season'].choices)[season]
+            selected['phase'] = dict(form.fields['phase'].choices)[phase]
+            selected['charge_type'] = dict(form.fields['charge_type'].choices)[charge_type]
+        else:
+            form = PowerForm()
+    else:
+        form = PowerForm()
+    power = dict(form=form,
+                 selected=selected,
+                 deg=deg,
+                 price=price,
+                 formula=formula,
+                 results=results)
+    power.update(csrf(request))
+    return render_to_response('power.html', power)
