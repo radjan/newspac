@@ -3,6 +3,7 @@ import sqlite3
 import atexit
 import datetime
 import traceback
+import threading
 
 import common
 log = common.get_logger()
@@ -25,10 +26,14 @@ def log_entry(fn):
     new_fn.__dict__.update(fn.__dict__)
     return new_fn
 
-conn = sqlite3.connect(common.DB_PATH)
-atexit.register(conn.close)
 def transaction(fn):
     def new_fn(*args, **kw):
+        try:
+            conn = threading.local().conn
+        except Exception:
+            conn = sqlite3.connect(common.DB_PATH)
+            threading.local().conn = conn
+            atexit.register(conn.close)
         c = conn.cursor()
         try:
             ret = fn(c, *args, **kw)
