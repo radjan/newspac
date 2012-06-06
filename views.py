@@ -17,8 +17,10 @@ import power_price as p_p
 def index(request):
     topics = db.homepage_topics()
     topics = _add_level(topics)
+    new_articles = db.get_new_artitcles()
     return render_to_response('index.html',
-                              dict(topics=topics))
+                              dict(topics=topics,
+                                   new_articles=new_articles))
 
 def _add_level(datalist):
     def value_fn(item):

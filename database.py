@@ -358,3 +358,15 @@ def get_articles_amount_by_topics(cursor, topics, start=None, end=None, limit=0)
         cursor.execute(sql, (topic,))
     return cursor.fetchone()[0]
 
+@log_entry
+@transaction
+def get_new_artitcles(cursor, limit=10):
+   sql = '''
+        SELECT id, title, url
+        FROM article
+        ORDER BY url_date DESC
+        LIMIT ?
+   '''
+   cursor.execute(sql, (limit,)) 
+   cols = ['id', 'title', 'url']
+   return [dict(zip(cols, item)) for item in cursor.fetchall()] 

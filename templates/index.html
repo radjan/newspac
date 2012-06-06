@@ -43,7 +43,15 @@
     </div>
     <div class='right_panel'>
         <div>時事小工具</div>
-        <div>&nbsp;<a href='/power_price'>電價漲價試算</a></div>
+        <div class='item'><a href='/power_price'>電價漲價試算</a></div>
+    </div>
+    <div class='right_panel'>
+        <div>最新進的新聞文章</div>
+        {% for a in new_articles %}
+        <div class='item'>
+            <a href='article?id={{a.id}}'>{{a.title}}</a>
+        </div>
+        {% endfor %}
     </div>
 </div>
 
