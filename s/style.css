@@ -180,6 +180,7 @@ background: #EFE;}
     padding: 5px;
 }
 .right_panel .item {
+    border-bottom: 1px dotted gray;
     padding: 2px 10px;}
 
 .topic_item {
