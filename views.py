@@ -187,9 +187,9 @@ def power_price(request):
                 price = num 
                 deg, formula = p_p.price2deg(price, charge_type, season, phase)
                 deg = int(deg)
-            for phase in [p_p.ORI, p_p.PH1, p_p.PH2]:
-                for season in [p_p.NORMAL, p_p.SUMMER]:
-                    results.append(p_p.deg2price(deg, charge_type, season, phase))
+            for p in [p_p.ORI, p_p.PH1, p_p.PH2]:
+                for s in [p_p.NORMAL, p_p.SUMMER]:
+                    results.append(p_p.deg2price(deg, charge_type, s, p))
             selected['season'] = dict(form.fields['season'].choices)[season]
             selected['phase'] = dict(form.fields['phase'].choices)[phase]
             selected['charge_type'] = dict(form.fields['charge_type'].choices)[charge_type]
