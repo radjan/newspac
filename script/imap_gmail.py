@@ -28,7 +28,7 @@ TOPIC_TITLE = 'title'
 RECEIVE_TIME = 'receive_time'
 DATE_FORMAT = '%a, %d %b %Y %H:%M:%S +0000'
 
-MAX_BATCH_AMOUNT = 300
+MAX_BATCH_AMOUNT = 30
 
 def main():
     server = IMAPClient(HOST, use_uid=True, ssl=ssl)
@@ -40,10 +40,12 @@ def main():
     messages = server.search(['NOT DELETED'])
     #messages = server.search(['UNSEEN'])
     log.info("%d messages that aren't deleted" % len(messages))
+    more_to_do = False
     if idx is not None:
         messages = [messages[idx],]
     elif len(messages) > MAX_BATCH_AMOUNT:
         messages = messages[0-MAX_BATCH_AMOUNT:]
+        more_to_do = True
 
     done_msgs = []
     for msg_id in messages:
@@ -65,6 +67,8 @@ def main():
         #tell server to delete deleted email
         server.expunge()
         log.info('delete %s mails from server' % len(done_msgs))
+    if more_to_do:
+        log.info('There is more mails to do')
 
 def process_email(server, msg_id):
     #print
