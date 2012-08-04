@@ -47,26 +47,27 @@ def main():
         messages = messages[0-MAX_BATCH_AMOUNT:]
         more_to_do = True
 
-    done_msgs = []
+    msgs_to_remove = []
     for msg_id in messages:
         try:
+            #remove all
+            msgs_to_remove.append(msg_id)
             process_email(server, msg_id)
-            done_msgs.append(msg_id)
         except Exception as e:
             log.info('%s failed! exc: %s' % (msg_id, e))
             if idx is None:
-                with open('email_backup/error/id_%s' % msg_id, 'w') as f:
+                with open(common.DB_DIR + '/email_backup/error/id_%s' % msg_id, 'w') as f:
                     traceback.print_exc(file=f)
             else:
                 raise
 
-    log.info('processed %s mails' % len(done_msgs))
-    if idx is None and done_msgs:
+    log.info('processed %s mails' % len(msgs_to_remove))
+    if idx is None and msgs_to_remove:
         #mark as deleted
-        server.set_flags(done_msgs, imapclient.DELETED)
+        server.set_flags(msgs_to_remove, imapclient.DELETED)
         #tell server to delete deleted email
         server.expunge()
-        log.info('delete %s mails from server' % len(done_msgs))
+        log.info('delete %s mails from server' % len(msgs_to_remove))
     if more_to_do:
         log.info('There is more mails to do')
 
@@ -85,7 +86,7 @@ def process_email(server, msg_id):
         #for data in result:
         #    for k, v in data.items():
         #        log.debug(k, v)
-        with open('email_backup/%s_%s.txt' % (msgid, topic_title), 'w') as f:
+        with open(common.DB_DIR + '/email_backup/%s_%s.txt' % (msgid, topic_title), 'w') as f:
             f.write(plain.encode('utf8'))
         log.info('parsing topic: %s' % topic_title)
         topic_title = db.ensure_topic_exists(topic_title)
