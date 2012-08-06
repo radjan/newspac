@@ -35,7 +35,7 @@ def get_logger():
         log = logging.getLogger(__name__)
         log.setLevel(logging.DEBUG)
         
-        debug_fh = _init_handler(debug_fn, formatter)
+        debug_fh = _init_handler(debug_fn, formatter, logging.INFO)
         fh = _init_handler(log_fn, formatter, logging.WARN)
         ch = logging.StreamHandler()
         ch.setLevel(logging.INFO)
