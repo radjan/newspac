@@ -32,7 +32,7 @@
         <div class='topic_item'>
             <div class='topic'>{{ topic_dict.topic }}</div>
             <div class='topic_desc_item'>
-                <a href='http://zh.wikipedia.org/wiki/{{ topic }}' target='_blank'>維基百科</a>
+                <a href='http://zh.wikipedia.org/wiki/{{ topic }}' target='_new'>維基百科</a>
             </div>
             <div class='topic_desc_item'>
                 <a href='topic_ana?topic={{ topic  }}'>相關主題</a>
@@ -50,10 +50,10 @@
         <div class='article {% cycle "odd" "even" %}'>
             <div class='date_title'>{{ a.created_date }}</div>
             <div>
-                <a href='{{ a.url }}' target='_blank'>{{ a.title|highlight:highlight_pattern }}</a>
+                <a href='{{ a.url }}' target='_new'>{{ a.title|highlight:highlight_pattern }}</a>
                 (<a href='article?id={{ a.id }}'>詳情</a>)
             </div>
-            <div><a href='{{ a.source_url }}' target='_blank'>{{ a.source }}</a></div>
+            <div><a href='{{ a.source_url }}' target='_new'>{{ a.source }}</a></div>
             <div>{{ a.brief|highlight:highlight_pattern }}</div>
         </div>
     {% endfor %}
