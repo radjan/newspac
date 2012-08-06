@@ -42,6 +42,8 @@ def transaction(fn):
             raise
         else:
             conn.commit()
+        finally:
+            c.close()
         return ret
     new_fn.__name__ = fn.__name__
     new_fn.__doc__ = fn.__doc__
