@@ -96,18 +96,19 @@ def _get_source_name(cursor, name):
 
 @log_entry
 @transaction
-def ensure_article_exists(cursor, article):
-    article_id = _get_article_id_by_url(cursor, article['url'])
-    source_name = _ensure_source_exists(cursor, article.pop('source'))
-    log.debug(source_name)
-    article['source'] = source_name
-    if not article_id:
+def ensure_article_exists(cursor, article, overwrite=False):
+    article_id = _get_article_id_by_url(cursor, cle['url'])
+    if article_id and not overwrite:
+        return article_id
+    elif not article_id:
         sql = 'insert into article (title, url, source, url_date)'\
                      ' values (:title, :url, :source, :url_date)'
     else:
         sql = 'update article set title = :title, source = :source,'\
               ' url_date = :url_date where id = :id'
         article['id'] = article_id
+    source_name = _ensure_source_exists(cursor, article.pop('source'))
+    article['source'] = source_name
     cursor.execute(sql, article)
     article_id = _get_article_id_by_url(cursor, article['url'])
     return article_id
