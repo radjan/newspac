@@ -97,7 +97,7 @@ def _get_source_name(cursor, name):
 @log_entry
 @transaction
 def ensure_article_exists(cursor, article, overwrite=False):
-    article_id = _get_article_id_by_url(cursor, cle['url'])
+    article_id = _get_article_id_by_url(cursor, article['url'])
     if article_id and not overwrite:
         return article_id
     elif not article_id:
