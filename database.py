@@ -58,7 +58,7 @@ SOURCE_KEYS = ('name', 'url', 'logo')
 def ensure_topic_exists(cursor, title):
     topic_title = _get_topic_title(cursor, title)
     
-    cached=cachedif topic_title:
+    if topic_title:
         return topic_title
     log.debug('insert title %s' % title)
     insert_sql = 'insert into topic (title)'\
