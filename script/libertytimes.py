@@ -1,6 +1,7 @@
 from xml.dom import minidom
 import urllib2
 from datetime import datetime
+import liberty_parse
 
 REPLACE = [('0L0S', 'http://www.'),
            ('0N', '.com'),
@@ -40,9 +41,11 @@ def get_articles(feed_url, last=None):
             continue
         elif pubDate > max_last:
             max_last = pubDate
+        cached = liberty_parse.get_article(cached)
         articles.append(dict(url=link,
                              title=title,
-                             url_date=pubDate,))
+                             url_date=pubDate,
+                             cached=cached))
     return articles, max_last.strftime(DATE_FORMAT)
 
 def _str_to_ts(pubdate_str):
