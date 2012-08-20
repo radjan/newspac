@@ -57,7 +57,8 @@ SOURCE_KEYS = ('name', 'url', 'logo')
 @transaction
 def ensure_topic_exists(cursor, title):
     topic_title = _get_topic_title(cursor, title)
-    if topic_title:
+    
+    cached=cachedif topic_title:
         return topic_title
     log.debug('insert title %s' % title)
     insert_sql = 'insert into topic (title)'\
@@ -101,11 +102,11 @@ def ensure_article_exists(cursor, article, overwrite=False):
     if article_id and not overwrite:
         return article_id
     elif not article_id:
-        sql = 'insert into article (title, url, source, url_date)'\
-                     ' values (:title, :url, :source, :url_date)'
+        sql = 'insert into article (title, url, source, url_date, cached)'\
+                     ' values (:title, :url, :source, :url_date, :cached)'
     else:
         sql = 'update article set title = :title, source = :source,'\
-              ' url_date = :url_date where id = :id'
+              ' url_date = :url_date, cached = :cached where id = :id'
         article['id'] = article_id
     source_name = _ensure_source_exists(cursor, article.pop('source'))
     article['source'] = source_name
