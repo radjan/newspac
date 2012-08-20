@@ -37,8 +37,8 @@ def main():
         new_articles, new_last = handler.get_articles(url, meta['last'])
         for a in new_articles:
             a['source'] = meta['source']
-            #aid = db.ensure_article_exists(a, overwrite=True)
-            print a
+            aid = db.ensure_article_exists(a, overwrite=True)
+            #print a
         print new_last
         meta['last'] = new_last
 
