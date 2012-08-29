@@ -8,7 +8,7 @@ REPLACE = [('0L0S', 'http://www.'),
            ('0B', '.'),
            ('0C', '/'),
            ('0E', '-'),
-           ('20A12', '2012'),]
+           ('0A', '0'),]
 START = '0L0S'
 END = '/'
 
@@ -41,7 +41,7 @@ def get_articles(feed_url, last=None):
             continue
         elif pubDate > max_last:
             max_last = pubDate
-        cached = liberty_parse.get_article(cached)
+        cached = liberty_parse.fetch_text(link)
         articles.append(dict(url=link,
                              title=title,
                              url_date=pubDate,
