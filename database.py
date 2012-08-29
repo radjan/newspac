@@ -98,7 +98,14 @@ def _get_source_name(cursor, name):
 @log_entry
 @transaction
 def ensure_article_exists(cursor, article, overwrite=False):
-    article_id = _get_article_id_by_url(cursor, article['url'])
+    if 'cached' not in article:
+        article['cached'] = None
+
+    if 'id' in article:
+        article_id = article['id']
+    else:
+        article_id = _get_article_id_by_url(cursor, article['url'])
+
     if article_id and not overwrite:
         return article_id
     elif not article_id:
@@ -106,7 +113,8 @@ def ensure_article_exists(cursor, article, overwrite=False):
                      ' values (:title, :url, :source, :url_date, :cached)'
     else:
         sql = 'update article set title = :title, source = :source,'\
-              ' url_date = :url_date, cached = :cached where id = :id'
+              ' url = :url, url_date = :url_date, cached = :cached'\
+              ' where id = :id'
         article['id'] = article_id
     source_name = _ensure_source_exists(cursor, article.pop('source'))
     article['source'] = source_name
@@ -219,12 +227,33 @@ def list_articles_by_topics(cursor, topics, limit=0):
     fetch = cursor.fetchall()
     return [dict(zip(cols, record)) for record in fetch]
      
+@log_entry
+@transaction
+def list_articles_by_source(cursor, source, limit=0):
+    limit_cause = ''
+    if limit > 0:
+        limit_cause = ' limit %s' % limit
+    cols = ['id', 'title', 'url', 'url_date', 'url_status', 'created',
+            'source', 'source_url']
+    sql = '''
+          select a.id, a.title, a.url, a.url_date, a.url_status, a.created,
+                 a.source, s.url
+          from article as a 
+                 inner join source s on a.source = s.name
+          where
+                a.source = ?
+          order by a.created desc
+          ''' + limit_cause
+    cursor.execute(sql, (source,))
+    fetch = cursor.fetchall()
+    return [dict(zip(cols, record)) for record in fetch]
+
 
 @log_entry
 @transaction
 def get_article(cursor, aid):
-    cols = ('id', 'title', 'url', 'source', 'url_date', 'url_status')
-    sql = 'select %s, %s, %s, %s, %s, %s from article where id = ?' % cols 
+    cols = ('id', 'title', 'url', 'source', 'url_date', 'url_status', 'cached')
+    sql = 'select %s, %s, %s, %s, %s, %s, %s from article where id = ?' % cols 
     cursor.execute(sql, (aid,))
     article = cursor.fetchone()
     return dict(zip(cols, article)) if article else None

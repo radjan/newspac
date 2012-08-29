@@ -17,7 +17,7 @@ import power_price as p_p
 def index(request):
     topics = db.homepage_topics()
     topics = _add_level(topics)
-    new_articles = db.get_new_artitcles()
+    new_articles = db.get_new_artitcles(limit=30)
     return render_to_response('index.html',
                               dict(topics=topics,
                                    new_articles=new_articles))
@@ -205,3 +205,16 @@ def power_price(request):
                  results=results)
     power.update(csrf(request))
     return render_to_response('power.html', power)
+
+def source(request):
+    s = _get(request, 's')
+    if not s:
+        return HttpResponseRedirect('/')
+    articles = db.list_articles_by_source(s)
+    if not articles:
+        return HttpResponseRedirect('/')
+    for article in articles:
+        article['url'] = urllib.unquote(article['url'])
+    source = db.get_source(s)
+    return render_to_response('source.html', dict(articles=articles,
+                                                  source=source))

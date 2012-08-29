@@ -19,6 +19,7 @@ urlpatterns = patterns('',
     url(r'^article$', 'views.article'), 
     url(r'^topic_ana$', 'views.topic_ana'), 
     url(r'^power_price$', 'views.power_price'), 
+    url(r'^source$', 'views.source'),
 )
 urlpatterns += staticfiles_urlpatterns()
 urlpatterns += patterns('',

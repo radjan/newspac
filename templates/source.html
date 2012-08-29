@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="description" content="台灣新聞收藏瀏覽" />
 <meta name="keywords" content="議題,時事,台灣新聞,政治新聞,財經新聞" />
-<title>新聞標題 - {{ title }}</title>
+<title>新聞來源 - {{ source.name }} - 新聞包Newspac</title>
 <link rel='stylesheet' href='s/style.css' type='text/css'/>
 <!-- google anlytics -->
 <script type="text/javascript">
@@ -22,19 +22,15 @@
 </script>
 <!-- end of google anlytics -->
 </head>
-<body class='article_page'>
+<body class='source_page'>
 {% include "head.html" %}
 <div class='container'>
-    <div>新聞：<a href='{{ url }}' target='_new'>{{ title }}</a></div>
-    <div>來源：<a href='{{ source.url }}' target='_new'>{{ source.name }}</a></div>
-    <div>擷取時間：{{ url_date }}</div>
-    <div>擷取內容：{{ cached }}</div>
+    <div><a href='{{ source.url }}' target='_new'>{{ source.name }}</a></div>
     <div>
-    相關主題：
-    {% for t in topics %}
-        <div class='topic_item'>
-            <div><a href='topic?topic={{ t.topic_title }}'>{{ t.topic_title }}</a></div>
-            <div>{{ t.brief|highlight:t.topic_title }}</div>
+    收集到的新聞：
+    {% for a in articles %}
+        <div class='news_item'>
+            <div><a href='article?id={{ a.id }}'>{{ a.title }}</a></div>
         </div>
     {% endfor %}
     <div class='home'><a href='/'>回首頁</a></div>
