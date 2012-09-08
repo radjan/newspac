@@ -229,21 +229,25 @@ def list_articles_by_topics(cursor, topics, limit=0):
      
 @log_entry
 @transaction
-def list_articles_by_source(cursor, source, limit=0):
+def list_articles_by_source(cursor, source, limit=0, addition_cols=None):
     limit_cause = ''
     if limit > 0:
         limit_cause = ' limit %s' % limit
+    cols_cause = ''
+    if addition_cols:
+        cols_cause = reduce(lambda x, y: x + y, (', a.%s' % col for col in addition_cols))
     cols = ['id', 'title', 'url', 'url_date', 'url_status', 'created',
-            'source', 'source_url']
+            'source', 'source_url'] + addition_cols
     sql = '''
           select a.id, a.title, a.url, a.url_date, a.url_status, a.created,
-                 a.source, s.url
+                 a.source, s.url%s
           from article as a 
                  inner join source s on a.source = s.name
           where
                 a.source = ?
-          order by a.created desc
-          ''' + limit_cause
+          order by a.created desc %s
+          '''
+    sql = sql % (cols_cause, limit_cause)
     cursor.execute(sql, (source,))
     fetch = cursor.fetchall()
     return [dict(zip(cols, record)) for record in fetch]
