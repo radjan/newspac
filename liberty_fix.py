@@ -18,7 +18,7 @@ def fetch_text(a):
     time.sleep(0.2)
     txt = lp.fetch_text(urllib.unquote(a['url']))
     if txt:
-        print a['title'], a['url']
+        print a['url_date'], a['title'], a['url']
         a['cached'] = txt
         return True
     return False
