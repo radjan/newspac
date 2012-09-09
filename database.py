@@ -234,6 +234,8 @@ def list_articles_by_source(cursor, source, limit=0, addition_cols=None):
     if limit > 0:
         limit_cause = ' limit %s' % limit
     cols_cause = ''
+    if addition_cols is None:
+        addition_cols = []
     if addition_cols:
         cols_cause = reduce(lambda x, y: x + y, (', a.%s' % col for col in addition_cols))
     cols = ['id', 'title', 'url', 'url_date', 'url_status', 'created',
