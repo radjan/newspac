@@ -196,7 +196,9 @@ def power_price(request):
         else:
             form = PowerForm()
     else:
-        form = PowerForm()
+        form = PowerForm(initial={
+                            'season': p_p.NORMAL,
+                            'phase': p_p.PH1,})
     power = dict(form=form,
                  selected=selected,
                  deg=deg,
