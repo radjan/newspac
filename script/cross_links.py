@@ -4,6 +4,7 @@ sys.path.append(os.path.dirname(__file__) + '/..')
 import sqlite3
 import common
 import database as db
+db.THREAD_LOCAL = True
 import datetime
 TS_FORMAT = '%Y-%m-%d %H:%M:%S'
 ONE_DAY = datetime.timedelta(days=1)

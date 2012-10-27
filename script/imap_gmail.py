@@ -16,6 +16,7 @@ from datetime import datetime
 
 import database as db
 import common
+db.THREAD_LOCAL = True
 
 log = common.get_logger()
 

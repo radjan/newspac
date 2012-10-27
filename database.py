@@ -26,14 +26,19 @@ def log_entry(fn):
     new_fn.__dict__.update(fn.__dict__)
     return new_fn
 
+
+THREAD_LOCAL = False
 def transaction(fn):
     def new_fn(*args, **kw):
-        try:
-            conn = threading.local().conn
-        except Exception:
+        if THREAD_LOCAL:
+            try:
+                conn = threading.local().conn
+            except Exception:
+                conn = sqlite3.connect(common.DB_PATH)
+                threading.local().conn = conn
+                atexit.register(conn.close)
+        else:
             conn = sqlite3.connect(common.DB_PATH)
-            threading.local().conn = conn
-            atexit.register(conn.close)
         c = conn.cursor()
         try:
             ret = fn(c, *args, **kw)
@@ -44,6 +49,8 @@ def transaction(fn):
             conn.commit()
         finally:
             c.close()
+            if not THREAD_LOCAL:
+                conn.close()
         return ret
     new_fn.__name__ = fn.__name__
     new_fn.__doc__ = fn.__doc__

@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 import simplejson as json
 import database as db
+db.THREAD_LOCAL = True
 from importlib import import_module
 
 def _feed_dict(feed_url, source, handler, catalog=None):
@@ -35,10 +36,14 @@ def main():
         print 'processing %s' % url
         handler = import_module(meta['handler'])
         new_articles, new_last = handler.get_articles(url, meta['last'])
+        bad_count = 0
         for a in new_articles:
             a['source'] = meta['source']
             aid = db.ensure_article_exists(a, overwrite=True)
+            if not a['cached']:
+                bad_count += 1
             #print a
+        print '  get %s articles, bad_count: %s' % (len(new_articles), bad_count)
         print new_last
         meta['last'] = new_last
 
