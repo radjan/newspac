@@ -17,7 +17,7 @@ TOPIC_SEPARATOR = '_-_'
 DISPLAY_SEPARATOR = '|'
 
 def mv_log(*log_fns):
-    fn = log_fns[1]
+    fn = log_fns[0]
     if os.path.exists(fn) and os.path.getsize(fn) == 0:
         for fn in log_fns:
             os.remove(fn)
@@ -35,22 +35,40 @@ def get_logger():
         log = logging.getLogger(__name__)
         log.setLevel(logging.DEBUG)
         
-        debug_fh = _init_handler(debug_fn, formatter, logging.INFO)
         fh = _init_handler(log_fn, formatter, logging.WARN)
-        ch = logging.StreamHandler()
-        ch.setLevel(logging.INFO)
-        ch.setFormatter(formatter)
-
-        log.addHandler(debug_fh)
         log.addHandler(fh)
-        log.addHandler(ch)
-        atexit.register(mv_log, debug_fn, log_fn) 
+
+        #debug_fh = _init_handler(debug_fn, formatter, logging.INFO)
+        #log.addHandler(debug_fh)
+
+        #ch = logging.StreamHandler()
+        #log.addHandler(ch)
+        #ch.setLevel(logging.INFO)
+        #ch.setFormatter(formatter)
+        #atexit.register(mv_log, debug_fn, log_fn) 
+        atexit.register(mv_log, log_fn) 
         
     return log        
 
-def _init_handler(fn, formatter, level=logging.DEBUG, maxBytes=30*MB, backupCount=10):
+def _init_handler(fn, formatter=None, level=logging.DEBUG, maxBytes=30*MB, backupCount=10):
     fh = handlers.RotatingFileHandler(fn, maxBytes=maxBytes, backupCount=backupCount) 
     #fh = handlers.RotatingFileHandler(fn)
     fh.setLevel(level)
-    fh.setFormatter(formatter)
+    if formatter:
+        fh.setFormatter(formatter)
     return fh
+
+bm = None
+def get_benchmark():
+    global bm
+    if bm:
+        return bm
+    pid = os.getpid()
+    bm_fn = LOG_ROOT + str(pid) + '-benchmark.log'
+    fh = _init_handler(bm_fn)
+
+    bm = logging.getLogger('BENCHMARK')
+    bm.setLevel(logging.DEBUG)
+    bm.addHandler(fh)
+    return bm
+    

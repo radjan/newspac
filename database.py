@@ -60,7 +60,7 @@ def transaction(fn):
 DATES = ('last_modified', 'created')
 SOURCE_KEYS = ('name', 'url', 'logo')
 
-@log_entry
+#@log_entry
 @transaction
 def ensure_topic_exists(cursor, title):
     topic_title = _get_topic_title(cursor, title)
@@ -74,7 +74,7 @@ def ensure_topic_exists(cursor, title):
     cursor.execute(insert_sql, (title,))
     return _get_topic_title(cursor, title)
 
-@log_entry
+#@log_entry
 def _get_topic_title(cursor, title):
     sql = 'select title from topic'\
           ' where title=?'
@@ -82,7 +82,7 @@ def _get_topic_title(cursor, title):
     topic = cursor.fetchone()
     return topic[0] if topic else None
 
-@log_entry
+#@log_entry
 def _ensure_source_exists(cursor, name):
     source_name = _get_source_name(cursor, name)
     if source_name:
@@ -94,7 +94,7 @@ def _ensure_source_exists(cursor, name):
     cursor.execute(insert_sql, (name, ''))
     return _get_source_name(cursor, name)
 
-@log_entry
+#@log_entry
 def _get_source_name(cursor, name):
     sql = 'select name from source'\
           ' where name=?'
@@ -102,7 +102,7 @@ def _get_source_name(cursor, name):
     source = cursor.fetchone()
     return source[0] if source else None
 
-@log_entry
+#@log_entry
 @transaction
 def ensure_article_exists(cursor, article, overwrite=False):
     if 'cached' not in article:
@@ -129,13 +129,13 @@ def ensure_article_exists(cursor, article, overwrite=False):
     article_id = _get_article_id_by_url(cursor, article['url'])
     return article_id
 
-@log_entry
+#@log_entry
 @transaction
 def update_source(cursor, name, url):
     sql = 'update source set url = ? where name = ?'
     cursor.execute(sql, (url, name))
 
-@log_entry
+#@log_entry
 def _get_article_id_by_url(cursor, url):
     sql = 'select id from article'\
           ' where url=?'
@@ -143,7 +143,7 @@ def _get_article_id_by_url(cursor, url):
     article_id = cursor.fetchone()
     return article_id[0] if article_id else None
 
-@log_entry
+#@log_entry
 @transaction
 def insert_or_update_t_a_rel(cursor, topic_title, article_id, brief):
     sql = 'select topic_title, article_id from topic_article_rel'\
@@ -159,7 +159,7 @@ def insert_or_update_t_a_rel(cursor, topic_title, article_id, brief):
     cursor.execute(sql, dict(topic_title=topic_title,
                              article_id=article_id,
                              brief=brief))
-@log_entry
+#@log_entry
 @transaction
 def list_topics(cursor):
     sql = 'select title from topic'
@@ -168,7 +168,7 @@ def list_topics(cursor):
     results = [record[0] for record in fetch]
     return results
 
-@log_entry
+#@log_entry
 @transaction
 def homepage_topics(cursor):
     sql = 'select t.title, dnt.amount, dnt.last_article from topic as t'\
@@ -179,7 +179,7 @@ def homepage_topics(cursor):
     results = [dict(zip(keys, row)) for row in fetch]
     return results
 
-@log_entry
+#@log_entry
 @transaction
 def list_articles_by_topic(cursor, topic_title, limit=0):
     limit_cause = ''
@@ -201,7 +201,7 @@ def list_articles_by_topic(cursor, topic_title, limit=0):
     fetch = cursor.fetchall()
     return [dict(zip(cols, record)) for record in fetch]
 
-@log_entry
+#@log_entry
 @transaction
 def list_articles_by_topics(cursor, topics, limit=0):
     if not topics:
@@ -234,7 +234,7 @@ def list_articles_by_topics(cursor, topics, limit=0):
     fetch = cursor.fetchall()
     return [dict(zip(cols, record)) for record in fetch]
      
-@log_entry
+#@log_entry
 @transaction
 def list_articles_by_source(cursor, source, limit=0, addition_cols=None):
     limit_cause = ''
@@ -262,7 +262,7 @@ def list_articles_by_source(cursor, source, limit=0, addition_cols=None):
     return [dict(zip(cols, record)) for record in fetch]
 
 
-@log_entry
+#@log_entry
 @transaction
 def get_article(cursor, aid):
     cols = ('id', 'title', 'url', 'source', 'url_date', 'url_status', 'cached')
@@ -271,7 +271,7 @@ def get_article(cursor, aid):
     article = cursor.fetchone()
     return dict(zip(cols, article)) if article else None
 
-@log_entry
+#@log_entry
 @transaction
 def get_source(cursor, name):
     cols = ['name', 'url', 'logo']
@@ -281,7 +281,7 @@ def get_source(cursor, name):
     source = cursor.fetchone()
     return dict(zip(cols, source)) if source else None
 
-@log_entry
+#@log_entry
 @transaction
 def get_topics_by_article(cursor, aid):
     cols = ('topic_title', 'brief')
@@ -290,7 +290,7 @@ def get_topics_by_article(cursor, aid):
     fetch = cursor.fetchall()
     return [dict(zip(cols, row)) for row in fetch]
 
-@log_entry
+#@log_entry
 @transaction
 def get_related_topics(cursor, topics, start=None, end=None, limit=0):
     start_cause = end_cause = limit_cause = ''
@@ -354,7 +354,7 @@ def get_related_topics(cursor, topics, start=None, end=None, limit=0):
     cols = ['title', 'amount']
     return [dict(zip(cols, row)) for row in cursor.fetchall()]
 
-@log_entry
+#@log_entry
 @transaction
 def get_articles_amount_by_topics(cursor, topics, start=None, end=None, limit=0):
     start_cause = end_cause = limit_cause = ''
@@ -404,7 +404,7 @@ def get_articles_amount_by_topics(cursor, topics, start=None, end=None, limit=0)
         cursor.execute(sql, (topic,))
     return cursor.fetchone()[0]
 
-@log_entry
+#@log_entry
 @transaction
 def get_new_artitcles(cursor, limit=10):
    sql = '''

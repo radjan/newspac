@@ -10,10 +10,28 @@ import datetime
 
 import database as db
 import common
-log = common.get_logger()
+#log = common.get_logger()
 
 import power_price as p_p
 
+bm = common.get_benchmark()
+import time
+def benchmark(fn):
+    def new_fn(*args, **kw):
+        t1 = time.time()
+        try:
+            return fn(*args, **kw)
+        except Exception, e:
+            raise
+        finally:
+            t2 = time.time()
+            bm.info('%s\t%s\t%s' % (t1, fn.__name__, t2-t1))
+    new_fn.__name__ = fn.__name__
+    new_fn.__doc__ = fn.__doc__
+    new_fn.__dict__.update(fn.__dict__)
+    return new_fn
+
+@benchmark
 def index(request):
     topics = db.homepage_topics()
     topics = _add_level(topics)
@@ -47,6 +65,7 @@ def _get_indexes(clist):
     seg_35 = int(l * 0.35)
     return [clist[seg_10], clist[seg_35], clist[-seg_35], clist[-seg_10]]
 
+@benchmark
 def topic(request):
     topics_str = _get(request, 'topic')
     if not topics_str:
@@ -95,6 +114,7 @@ def topic(request):
                                    limit=limit,
                                    related_topics=related_topics))
 
+@benchmark
 def article(request):
     aid = _get(request, 'id')
     if not aid:
@@ -109,6 +129,7 @@ def article(request):
     article['source']['url'] = urllib.unquote(article['source']['url'])
     return render_to_response('article.html', article)
 
+@benchmark
 def topic_ana(request):
     topics_str = _get(request, 'topic')
     if not topics_str:
@@ -168,6 +189,7 @@ class PowerForm(forms.Form):
     season = forms.ChoiceField([(p_p.NORMAL, u'非夏月用電'), (p_p.SUMMER, u'夏月用電')], label=u'用電季節')
     phase = forms.ChoiceField([(p_p.ORI, u'漲價前電價'), (p_p.PH1, u'第一階段調漲'), (p_p.PH2, u'第二階段調漲')], label = u'電價')
     
+@benchmark
 def power_price(request):
     deg = price = 0
     formula = results = []
@@ -208,6 +230,7 @@ def power_price(request):
     power.update(csrf(request))
     return render_to_response('power.html', power)
 
+@benchmark
 def source(request):
     s = _get(request, 's')
     if not s:
