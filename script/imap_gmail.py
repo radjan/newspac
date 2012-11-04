@@ -22,7 +22,7 @@ log = common.get_logger()
 
 HOST = 'imap.gmail.com'
 USERNAME = 'news.packs@gmail.com'
-PASSWORD = 'news0987!'
+PASSWORD = ''
 ssl = True
 
 TOPIC_TITLE = 'title'
