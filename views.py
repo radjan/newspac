@@ -26,12 +26,13 @@ def benchmark(fn):
             ip = req.META['REMOTE_ADDR']
             query =  req.REQUEST
             path_info = req.META['PATH_INFO']
+            agent = req.META['HTTP_USER_AGENT']
             return fn(*args, **kw)
         except Exception, e:
             raise
         finally:
             t2 = time.time()
-            entries = (BENCHMARK_VERSION, t1, t2-t1, ip, path_info, fn.__name__, query)
+            entries = (BENCHMARK_VERSION, t1, t2-t1, ip, path_info, fn.__name__, query, agent)
             bm.info('\t'.join(['%s'] * len(entries)) % entries)
     new_fn.__name__ = fn.__name__
     new_fn.__doc__ = fn.__doc__
