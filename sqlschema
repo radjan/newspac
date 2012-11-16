@@ -18,6 +18,20 @@ CREATE TABLE article (id integer primary key autoincrement, title varchar(255) n
 CREATE TRIGGER insert_article after insert on article begin update article set created = DATETIME('NOW') where id = new.id; end;
 CREATE TRIGGER update_article after update on article begin update article set last_modified = DATETIME('NOW') where id = new.id; end;
 
-CREATE TABLE topic_article_rel (topic_title varchar(255) constraint topic_fk references topic(title), article_id integer constraint topic_fk references article(id), brief text, last_modified datetime, created datetime, primary key (topic_title, article_id));
+CREATE TABLE topic_article_rel (topic_title varchar(255) constraint topic_fk references topic(title), article_id integer constraint artitcle_fk references article(id), brief text, last_modified datetime, created datetime, primary key (topic_title, article_id));
 CREATE TRIGGER insert_topic_article_rel after insert on topic_article_rel begin update topic_article_rel set created = DATETIME('NOW') where topic_title = new.topic_title and article_id = new.article_id; end;
 CREATE TRIGGER update_topic_article_rel after update on topic_article_rel begin update topic_article_rel set created = DATETIME('NOW') where topic_title = new.topic_title and article_id = new.article_id; end;
+
+
+CREATE TABLE catalog (id int primary key, name varchar(255));
+
+CREATE TABLE topic2 (title varchar(255) primary key, brief text, last_modified datetime, created datetime);
+INSERT INTO topic2 (title, brief, last_modified, created) SELECT title, brief, last_modified, created FROM topic;
+drop table topic;
+alter table topic2 rename to topic;
+CREATE TRIGGER insert_topic after insert on topic begin update topic set created = DATETIME('NOW') where title = new.title; end;
+CREATE TRIGGER update_topic after update on topic begin update topic set last_modified = DATETIME('NOW') where title = new.title; end;
+
+CREATE TABLE topic_catalog_rel (topic_title varchar(255) constraint topic_fk references topic(title), catalog_id int constraint catalog_fk references catalog(id), created datetime, primary key (topic_title, catalog_id));
+CREATE TRIGGER insert_t_c_rel after insert on topic_catalog_rel begin update topic_catalog_rel set created = DATETIME('NOW') where topic_title = new.topic_title and catalog_id = new.catalog_id; end;
+
