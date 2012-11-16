@@ -31,6 +31,9 @@ def benchmark(fn):
     new_fn.__dict__.update(fn.__dict__)
     return new_fn
 
+def empty(request):
+    return HttpResponse('')
+
 def maintenance(request):
     return HttpResponse(u'''
     <html>
