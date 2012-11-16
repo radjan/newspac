@@ -21,7 +21,7 @@ BENCHMARK_VERSION = 1
 def benchmark(fn):
     def new_fn(*args, **kw):
         t1 = time.time()
-        is_log = true
+        is_log = True
         try:
             req =  args[0]
             ip = req.META['REMOTE_ADDR']
@@ -29,7 +29,7 @@ def benchmark(fn):
             path_info = req.META['PATH_INFO']
             agent = req.META['HTTP_USER_AGENT']
             if 'Baiduspider' in agent:
-                is_log = false
+                is_log = False
                 return HttpResponse('')
             return fn(*args, **kw)
         except Exception, e:
@@ -65,7 +65,7 @@ def robot(request):
 User-agent: *
 Disallow: /topic_ana
 Disallow: /source
-''')
+''', mimetype="text/plain")
 @benchmark
 def index(request):
     topics = db.homepage_topics()
