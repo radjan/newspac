@@ -54,6 +54,12 @@ def maintenance(request):
     ''')
 
 @benchmark
+def robot(request):
+    return HttpResponse('''
+User-agent: *
+Disallow: /
+''')
+@benchmark
 def index(request):
     topics = db.homepage_topics()
     topics = _add_level(topics)
