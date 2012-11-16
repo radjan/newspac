@@ -12,6 +12,14 @@ DB_PATH = DB_DIR + '/newspacks.db'
 
 MB = 1024 * 1024
 LOG_ROOT = '/var/log/newspack/'
+PROD = 'prod'
+DEV = 'dev'
+
+flavor = DEV
+
+def is_prod():
+    global flavor
+    return flavor == PROD
 
 TOPIC_SEPARATOR = '_-_'
 DISPLAY_SEPARATOR = '|'
@@ -29,15 +37,16 @@ def get_logger():
     global log
     if not log:
         formatter = logging.Formatter('%(asctime)s - %(module)s - %(levelname)s - %(message)s')
-        pid = os.getpid()
-        debug_fn = LOG_ROOT + str(pid) + '-news-debug.log'
-        log_fn = LOG_ROOT + str(pid) + '-news.log'
         log = logging.getLogger(__name__)
         log.setLevel(logging.DEBUG)
         
+        pid = os.getpid()
+
+        log_fn = LOG_ROOT + str(pid) + '-news.log'
         fh = _init_handler(log_fn, formatter, logging.WARN)
         log.addHandler(fh)
 
+        #debug_fn = LOG_ROOT + str(pid) + '-news-debug.log'
         #debug_fh = _init_handler(debug_fn, formatter, logging.INFO)
         #log.addHandler(debug_fh)
 
@@ -64,8 +73,12 @@ def get_benchmark():
     if bm:
         return bm
     pid = os.getpid()
-    bm_fn = LOG_ROOT + str(pid) + '-benchmark.log'
-    fh = _init_handler(bm_fn)
+    if is_prod():
+        bm_fn = LOG_ROOT + 'benchmark.log'
+        fh = _init_handler(bm_fn)
+    else:
+        fh = logging.StreamHandler()
+        fh.setLevel(logging.INFO)
 
     bm = logging.getLogger('BENCHMARK')
     bm.setLevel(logging.DEBUG)
