@@ -31,6 +31,17 @@ def benchmark(fn):
     new_fn.__dict__.update(fn.__dict__)
     return new_fn
 
+def maintenance(request):
+    return HttpResponse(u'''
+    <html>
+    <head><title>新聞面面觀</title></head>
+    <body style="text-align: center">
+    <div>網站維護中，馬上回來！</div>
+    <div>Site during maintenance, be right back!</div>
+    </body>
+    </html>
+    ''')
+
 @benchmark
 def index(request):
     topics = db.homepage_topics()

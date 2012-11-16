@@ -24,5 +24,6 @@ urlpatterns = patterns('',
 urlpatterns += staticfiles_urlpatterns()
 urlpatterns += patterns('',
     url(r'.*', 'views.index'),  
+    #url(r'.*', 'views.maintenance'),  
 )
 
