@@ -16,16 +16,23 @@ import power_price as p_p
 
 bm = common.get_benchmark()
 import time
+
+BENCHMARK_VERSION = 1
 def benchmark(fn):
     def new_fn(*args, **kw):
         t1 = time.time()
         try:
+            req =  args[0]
+            ip = req.META['REMOTE_ADDR']
+            query =  req.REQUEST
+            path_info = req.META['PATH_INFO']
             return fn(*args, **kw)
         except Exception, e:
             raise
         finally:
             t2 = time.time()
-            bm.info('%s\t%s\t%s' % (t1, fn.__name__, t2-t1))
+            entries = (BENCHMARK_VERSION, t1, t2-t1, ip, path_info, fn.__name__, query)
+            bm.info('\t'.join(['%s'] * len(entries)) % entries)
     new_fn.__name__ = fn.__name__
     new_fn.__doc__ = fn.__doc__
     new_fn.__dict__.update(fn.__dict__)
