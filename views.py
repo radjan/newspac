@@ -21,19 +21,25 @@ BENCHMARK_VERSION = 1
 def benchmark(fn):
     def new_fn(*args, **kw):
         t1 = time.time()
+        is_log = true
         try:
             req =  args[0]
             ip = req.META['REMOTE_ADDR']
             query =  req.REQUEST
             path_info = req.META['PATH_INFO']
             agent = req.META['HTTP_USER_AGENT']
+            if 'Baiduspider' in agent:
+                is_log = false
+                return HttpResponse('')
             return fn(*args, **kw)
         except Exception, e:
             raise
         finally:
-            t2 = time.time()
-            entries = (BENCHMARK_VERSION, t1, t2-t1, ip, path_info, fn.__name__, query, agent)
-            bm.info('\t'.join(['%s'] * len(entries)) % entries)
+            if is_log:
+                t2 = time.time()
+                entries = (BENCHMARK_VERSION, t1, t2-t1, ip, path_info,
+                           fn.__name__, query, agent)
+                bm.info('\t'.join(['%s'] * len(entries)) % entries)
     new_fn.__name__ = fn.__name__
     new_fn.__doc__ = fn.__doc__
     new_fn.__dict__.update(fn.__dict__)
@@ -57,7 +63,8 @@ def maintenance(request):
 def robot(request):
     return HttpResponse('''
 User-agent: *
-Disallow: /
+Disallow: /topic_ana
+Disallow: /source
 ''')
 @benchmark
 def index(request):
