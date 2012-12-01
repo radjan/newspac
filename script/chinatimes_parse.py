@@ -10,4 +10,4 @@ def fetch_text(url):
         return url, bs.find(attrs={'id': re.compile('ctkeywordcontent')}).get_text()
     except Exception, e:
         #raise
-        return None
+        return url, None
