@@ -15,6 +15,10 @@ default_feeds = []
 default_feeds.append(_feed_dict('http://www.libertytimes.com.tw/rss/fo.xml', u'自由時報', 'libertytimes', u'焦點'))
 default_feeds.append(_feed_dict('http://www.libertytimes.com.tw/rss/p.xml', u'自由時報', 'libertytimes', u'政治'))
 default_feeds.append(_feed_dict('http://www.libertytimes.com.tw/rss/e.xml', u'自由時報', 'libertytimes', u'財經'))
+default_feeds.append(_feed_dict('http://rss.chinatimes.com/rss/focusing-u.rss', u'中時電子報', 'chinatimes', u'首頁焦點'))
+default_feeds.append(_feed_dict('http://rss.chinatimes.com/rss/focus-u.rss', u'中時電子報', 'chinatimes', u'焦點'))
+default_feeds.append(_feed_dict('http://rss.chinatimes.com/rss/Politic-u.rss', u'中時電子報', 'chinatimes', u'政治'))
+default_feeds.append(_feed_dict('http://rss.chinatimes.com/rss/finance-u.rss', u'中時電子報', 'chinatimes', u'財經'))
 
 def _load_state():
     with open('feed_state', 'r') as f:
@@ -34,7 +38,7 @@ def main():
 
     for url, meta in state.items():
         print 'processing %s' % url
-        handler = import_module(meta['handler'])
+        handler = import_module(meta['handler']).Handler()
         new_articles, new_last = handler.get_articles(url, meta['last'])
         bad_count = 0
         for a in new_articles:
