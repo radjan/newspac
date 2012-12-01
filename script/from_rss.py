@@ -18,7 +18,10 @@ default_feeds.append(_feed_dict('http://www.libertytimes.com.tw/rss/e.xml', u'�
 default_feeds.append(_feed_dict('http://rss.chinatimes.com/rss/focusing-u.rss', u'中時電子報', 'chinatimes', u'首頁焦點'))
 default_feeds.append(_feed_dict('http://rss.chinatimes.com/rss/focus-u.rss', u'中時電子報', 'chinatimes', u'焦點'))
 default_feeds.append(_feed_dict('http://rss.chinatimes.com/rss/Politic-u.rss', u'中時電子報', 'chinatimes', u'政治'))
-default_feeds.append(_feed_dict('http://rss.chinatimes.com/rss/finance-u.rss', u'中時電子報', 'chinatimes', u'財經'))
+#default_feeds.append(_feed_dict('http://rss.chinatimes.com/rss/finance-u.rss', u'中時電子報', 'chinatimes', u'財經'))
+default_feeds.append(_feed_dict('http://www.appledaily.com.tw/rss/create/kind/sec/type/1077', u'蘋果日報', 'appledaily', u'頭條'))
+default_feeds.append(_feed_dict('http://www.appledaily.com.tw/rss/create/kind/sec/type/151', u'蘋果日報', 'appledaily', u'政治'))
+default_feeds.append(_feed_dict('http://www.appledaily.com.tw/rss/create/kind/sec/type/11', u'蘋果日報', 'appledaily', u'要聞'))
 
 def _load_state():
     with open('feed_state', 'r') as f:
