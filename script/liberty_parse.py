@@ -14,4 +14,4 @@ def fetch_text(url):
             return url, bs.find(attrs={'id': re.compile('newsContent')}).find_all('span')[1].get_text()
     except Exception, e:
         #raise
-        return None
+        return url, None
