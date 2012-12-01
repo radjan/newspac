@@ -28,7 +28,7 @@ sql = 'select a.id, a.title, tar.brief, tar.topic_title, a.cached'\
       ' on a.id = tar.article_id'
 if (now - latest_dt) > PROCESS_WINDOW:
     #no new topic, do the latest only
-    c.execute(sql + ' where a.created > ?', (now - PROCESS_WINDOW,))
+    c.execute(sql + ' where a.last_modified > ?', (now - PROCESS_WINDOW,))
 else:
     c.execute(sql)
 
