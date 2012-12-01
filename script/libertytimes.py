@@ -35,13 +35,12 @@ def get_articles(feed_url, last=None):
         link = getTextByTagName(item, 'link')
         title = getTextByTagName(item, 'title')
         pubDate = getTextByTagName(item, 'pubDate')
-        link = convertUrl(link)
         pubDate = _str_to_ts(pubDate)
         if last and pubDate <= last:
             continue
         elif pubDate > max_last:
             max_last = pubDate
-        cached = liberty_parse.fetch_text(link)
+        link, cached = liberty_parse.fetch_text(link)
         articles.append(dict(url=link,
                              title=title,
                              url_date=pubDate,
