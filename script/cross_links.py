@@ -50,8 +50,21 @@ count = 0
 for t in topics:
     for aid, a in articles.items():
         if t not in a['topics']:
-            if t.lower() in (a['title'] + a['brief'] + a['cached']).lower():
-                db.insert_or_update_t_a_rel(t, aid, a['brief'] if a['brief'] else a['cached'])
+            lt = t.lower()
+            l_cached = a['cached'].lower()
+            if lt in a['title'].lower() or lt in l_cached or lt in a['brief'].lower():
+                brief = a['brief']
+                if lt in l_cached:
+                    idx = l_cached.find(lt)
+                    s = idx - 75
+                    e = idx + 75
+                    if s < 0:
+                        s = 0
+                        e += 75
+                    brief = a['cached'][s:e]
+                if not brief:
+                    brief = a['cached'][:150]
+                db.insert_or_update_t_a_rel(t, aid, brief)
                 count += 1
 conn.commit()
 print 'add %s links' % count
