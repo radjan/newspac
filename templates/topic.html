@@ -45,17 +45,19 @@
     {% endfor %}
     </div>
     <div class='article_body'>
+    <!--
         <div class='article evenhead'>&nbsp;</div>
+    -->
     {% for a in articles %}
-        <div class='article {% cycle "odd" "even" %}'>
-            <div class='date_title'>{{ a.created_date }}</div>
+        <article class='article {% cycle "odd" "even" %}'>
             <div>
                 <a href='{{ a.url }}' target='_new'>{{ a.title|highlight:highlight_pattern }}</a>
                 (<a href='article?id={{ a.id }}'>詳情</a>)
             </div>
             <div><a href='{{ a.source_url }}' target='_new'>{{ a.source }}</a></div>
-            <div>{{ a.brief|highlight:highlight_pattern }}</div>
-        </div>
+            <div>{{ a.created_date }}
+            {{ a.brief|highlight:highlight_pattern }}</div>
+        </article>
     {% endfor %}
     {% if limit %}
         <div class='showmore'>
