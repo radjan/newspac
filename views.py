@@ -70,10 +70,10 @@ Disallow: /source
 def index(request):
     topics = db.homepage_topics()
     topics = _add_level(topics)
-    new_articles = db.get_new_artitcles(limit=30)
+    #new_articles = db.get_new_artitcles(limit=30)
     return render_to_response('index.html',
-                              dict(topics=topics,
-                                   new_articles=new_articles))
+                              dict(topics=topics,))
+                                   #new_articles=new_articles))
 
 def _add_level(datalist):
     def value_fn(item):
