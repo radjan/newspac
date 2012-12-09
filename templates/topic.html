@@ -56,7 +56,7 @@
             </div>
             <div><a href='{{ a.source_url }}' target='_new'>{{ a.source }}</a></div>
             <div>{{ a.created_date }}
-            {{ a.brief|highlight:highlight_pattern }}</div>
+            ...{{ a.brief|highlight:highlight_pattern }}</div>
         </article>
     {% endfor %}
     {% if limit %}
