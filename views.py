@@ -1,21 +1,27 @@
 #! /bin/env python
 # -*- coding: utf-8 -*-
 import urllib
+import os
+import csv
+import codecs
+import cStringIO
 from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect, HttpResponse
 from django import forms
 from django.core.context_processors import csrf
+from django.core.servers.basehttp import FileWrapper
 
 import datetime
 
 import database as db
 import common
-#log = common.get_logger()
+log = common.get_logger()
 
 import power_price as p_p
 
 bm = common.get_benchmark()
 import time
+import settings
 
 BENCHMARK_VERSION = 1
 def benchmark(fn):
@@ -28,7 +34,7 @@ def benchmark(fn):
             query =  req.REQUEST
             path_info = req.META['PATH_INFO']
             agent = req.META['HTTP_USER_AGENT']
-            if 'Baiduspider' in agent:
+            if 'Baiduspider' in agent or 'Sogou web spider' in agent:
                 is_log = False
                 return HttpResponse('')
             return fn(*args, **kw)
@@ -162,6 +168,8 @@ def article(request):
     article['topics'] = db.get_topics_by_article(aid)
     article['url'] = urllib.unquote(article['url'])
     article['source']['url'] = urllib.unquote(article['source']['url'])
+    if article['cached'] and len(article['cached']) > 100:
+        article['cached'] = article['cached'][:100] + '...'
     return render_to_response('article.html', article)
 
 @benchmark
@@ -278,3 +286,53 @@ def source(request):
     source = db.get_source(s)
     return render_to_response('source.html', dict(articles=articles,
                                                   source=source))
+
+DATA_ROOT = os.path.join(settings.ROOT_DIR, 'd')
+
+@benchmark
+def dtopic(request):
+    t = _get(request, 't')
+    if not t:
+        return HttpResponseRedirect('/')
+    filename = os.path.join(DATA_ROOT, 'topic', t)
+    #if not os.path.exists(filename) or True:
+    if True:
+        with open(filename, 'wb') as f:
+            writer = UnicodeWriter(f)
+            topics = t.split(common.TOPIC_SEPARATOR)
+            related_topics = db.get_related_topics(topics, limit=10)
+            writer.writerow(['topic', 'articles'])
+            writer.writerows([[d['title'], str(d['amount'])] for d in related_topics])
+    wrapper = FileWrapper(file(filename))
+    response = HttpResponse(wrapper, content_type='text/plain')
+    response['Content-Length'] = os.path.getsize(filename)
+    return response
+
+class UnicodeWriter:
+    """
+    A CSV writer which will write rows to CSV file "f",
+    which is encoded in the given encoding.
+    """
+
+    def __init__(self, f, dialect=csv.excel, encoding="utf-8", **kwds):
+        # Redirect output to a queue
+        self.queue = cStringIO.StringIO()
+        self.writer = csv.writer(self.queue, dialect=dialect, **kwds)
+        self.stream = f
+        self.encoder = codecs.getincrementalencoder(encoding)()
+
+    def writerow(self, row):
+        self.writer.writerow([s.encode("utf-8") for s in row])
+        # Fetch UTF-8 output from the queue ...
+        data = self.queue.getvalue()
+        data = data.decode("utf-8")
+        # ... and reencode it into the target encoding
+        data = self.encoder.encode(data)
+        # write to the target stream
+        self.stream.write(data)
+        # empty queue
+        self.queue.truncate(0)
+
+    def writerows(self, rows):
+        for row in rows:
+            self.writerow(row) 
