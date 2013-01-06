@@ -63,16 +63,13 @@ a[target="_blank"] {
 }
 
 .pad {
-    width: 70%;
     padding: 20px;
-    margin: 0;
-    float: left;
+    margin-right: 300px;
 }
 .col {
     width: 300px;
-    margin: 0;
-    padding: 0;
-    float: left;
+    position: absolute;
+    right: 10px;
 }
 
 .pad .title {
@@ -154,7 +151,6 @@ background: #EFE;}
     margin: 0 12px 0 24px;
     padding: 0;}
 .article {
-    /*border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;*/
     -moz-box-shadow: 5px 5px 5px rgba(68,68,68,0.6);
     -webkit-box-shadow: 5px 5px 5px rgba(68,68,68,0.6);
     box-shadow: 5px 5px 5px rgba(68,68,68,0.6);
@@ -165,7 +161,8 @@ background: #EFE;}
     width: 95%;
     height: 120px;
     overflow: hidden;
-    margin: 10px 0;}
+    margin: 10px 0;
+    }
 .article:hover {
     background: #EFE;
 }
@@ -242,3 +239,4 @@ background: #EFE;}
 .ana_bar {
     background: #800;
 }
+/*border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;*/
