@@ -6,6 +6,19 @@
 <meta name="keywords" content="議題,時事,台灣新聞,政治新聞,財經新聞" />
 <title>主題 - {{ topic }} - 新聞面面觀 Newspac</title>
 <link rel='stylesheet' href='s/style.css' type='text/css'/>
+<style>
+body {
+  font: sans-serif;
+}
+#pie {
+  font: 10px sans-serif;
+}
+
+.arc path {
+  stroke: #fff;
+}
+</style>
+<script src="http://d3js.org/d3.v3.min.js"></script>
 <!-- google anlytics -->
 <script type="text/javascript">
 
@@ -35,7 +48,7 @@
                 <a href='http://zh.wikipedia.org/wiki/{{ topic }}' target='_new'>維基百科</a>
             </div>
             <div class='topic_desc_item'>
-                <a href='topic_ana?topic={{ topic  }}'>相關主題</a>
+                <a href='topic_ana?topic={{ topic }}'>相關主題</a>
             </div>
             {% if topic_dict.rm_q %}
             <div class='topic_desc_item'><a href='?topic={{ topic_dict.rm_q }}'>
@@ -45,17 +58,19 @@
     {% endfor %}
     </div>
     <div class='article_body'>
+    <!--
         <div class='article evenhead'>&nbsp;</div>
+    -->
     {% for a in articles %}
-        <div class='article {% cycle "odd" "even" %}'>
-            <div class='date_title'>{{ a.created_date }}</div>
+        <article class='article {% cycle "odd" "even" %}'>
             <div>
                 <a href='{{ a.url }}' target='_new'>{{ a.title|highlight:highlight_pattern }}</a>
                 (<a href='article?id={{ a.id }}'>詳情</a>)
             </div>
             <div><a href='{{ a.source_url }}' target='_new'>{{ a.source }}</a></div>
-            <div>{{ a.brief|highlight:highlight_pattern }}</div>
-        </div>
+            <div>{{ a.created_date }}
+            ...{{ a.brief|highlight:highlight_pattern }}</div>
+        </article>
     {% endfor %}
     {% if limit %}
         <div class='showmore'>
@@ -74,6 +89,8 @@
     {% if related_topics %}
     <div class='right_panel'>
     <div>相關新聞主題</div>
+    <div id="pie" class='right_panel'>
+    </div>
     {% for t in related_topics %}
         <div class='item'>
         <a href='?topic={{ t.q }}'>[+] {{ t.title }}</a> ({{ t.amount }})
@@ -85,3 +102,48 @@
 {% include "footer.html" %}
 </body>
 </html>
+
+    <script>
+        var width = 300,
+            height = 300,
+            radius = Math.min(width, height) / 2;
+
+        var color = d3.scale.ordinal()
+            .range(["#C84", "#8C4", "#C48", "#48C", "#CC0", "#4C8", "#84C"]);
+
+        var arc = d3.svg.arc()
+            .outerRadius(radius - 10)
+            .innerRadius(0);
+
+        var pie = d3.layout.pie()
+            .sort(null)
+            .value(function(d) { return d.articles; });
+
+        var svg = d3.select("#pie").append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .append("g")
+            .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+        d3.csv("d/topic.csv?t={{ topic }}", function(error, data) {
+
+          data.forEach(function(d) {
+            d.articles = +d.articles;
+          });
+
+          var g = svg.selectAll(".arc")
+              .data(pie(data))
+              .enter().append("g")
+              .attr("class", "arc");
+
+          g.append("path")
+           .attr("d", arc)
+           .style("fill", function(d) { return color(d.data.topic); });
+
+          g.append("text")
+           .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
+           .attr("dy", ".4em")
+           .style("text-anchor", "middle")
+           .text(function(d) { return d.data.topic; });
+        });
+    </script>

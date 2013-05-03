@@ -23,7 +23,7 @@ CREATE TRIGGER insert_topic_article_rel after insert on topic_article_rel begin 
 CREATE TRIGGER update_topic_article_rel after update on topic_article_rel begin update topic_article_rel set created = DATETIME('NOW') where topic_title = new.topic_title and article_id = new.article_id; end;
 
 
-CREATE TABLE catalog (id int primary key, name varchar(255));
+CREATE TABLE catalog (id integer primary key autoincrement, name varchar(255));
 
 CREATE TABLE topic2 (title varchar(255) primary key, brief text, last_modified datetime, created datetime);
 INSERT INTO topic2 (title, brief, last_modified, created) SELECT title, brief, last_modified, created FROM topic;

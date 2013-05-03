@@ -27,19 +27,21 @@
 {% include "head.html" %}
 <div class='page'>
 <div class='pad'>
-    <div class='title'>收集到的新聞主題</div>
+    <h1 class='title'>收集到的新聞主題</h1>
+    <ul>
     {% for topic in topics %}
-    <div class='item'>
+    <li class='item'>
         <a href='topic?topic={{ topic.title }}'>
         {{ topic.title }}
         </a>
         <span class='tag_{{ topic.level }}'>
         ({{ topic.amount }})</span>
-    </div>
+    </li>
     {% endfor %}
+    </ul>
 </div>
 
-<div class='col'>
+<aside class='col'>
     <div class='adsense'>
     {% include "adsense.html" %}
     </div>
@@ -47,6 +49,7 @@
         <div>時事小工具</div>
         <div class='item'><a href='/power_price'>電價漲價試算</a></div>
     </div>
+    <!--
     <div class='right_panel'>
         <div>最新進的新聞文章</div>
         {% for a in new_articles %}
@@ -55,7 +58,8 @@
         </div>
         {% endfor %}
     </div>
-</div>
+    -->
+</aside>
 
 {% include "footer.html" %}
 

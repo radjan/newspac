@@ -12,7 +12,7 @@ import email
 import base64
 #from HTMLParser import HTMLParser
 #from htmlentitydefs import name2codepoint
-from datetime import datetime
+from datetime import datetime, tzinfo, timedelta
 
 import database as db
 import common
@@ -30,6 +30,10 @@ RECEIVE_TIME = 'receive_time'
 DATE_FORMAT = '%a, %d %b %Y %H:%M:%S +0000'
 
 MAX_BATCH_AMOUNT = 30
+
+class UTC(tzinfo):
+    def utcoffset(self, dt): return timedelta(0)
+    def dst(self, dt): return timedelta(0)
 
 def main():
     server = IMAPClient(HOST, use_uid=True, ssl=ssl)
@@ -152,7 +156,7 @@ def parse_message(msgid, data):
             pass
 
     if from_google_alert:
-        email_info = {RECEIVE_TIME: datetime.strptime(sent_time, DATE_FORMAT)}
+        email_info = {RECEIVE_TIME: datetime.strptime(sent_time, DATE_FORMAT).replace(tzinfo=UTC())}
         return email_info, plain
     return None, None
 
