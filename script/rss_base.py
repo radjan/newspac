@@ -14,22 +14,25 @@ class UTC8(tzinfo):
     def dst(self, dt): return timedelta(hours=8)
 
 class RssBaseHandler(object):
-    def get_articles(self, feed_url, last=None):
+    def get_articles(self, feed_url, last=None, limit=25):
         last = self._to_utc(datetime.strptime(last, DATE_FORMAT)) if last else datetime(1970, 1, 1, tzinfo=UTC())
         max_last = last
         articles = []
         f = urllib2.urlopen(feed_url)
         dom = minidom.parse(f)
         items = dom.getElementsByTagName('item')
+        count = 0
         for item in items:
-            link = self.getTextByTagName(item, 'link')
-            title = self.getTextByTagName(item, 'title')
+            if count > limit: break
+            count += 1
             pubDate = self.getTextByTagName(item, 'pubDate')
             pubDate = self._str_to_ts(pubDate)
             if last and pubDate <= last:
                 continue
             elif pubDate > max_last:
                 max_last = pubDate
+            link = self.getTextByTagName(item, 'link')
+            title = self.getTextByTagName(item, 'title')
             link, cached = self.fetch_text(link)
             articles.append(dict(url=link,
                                  title=title,

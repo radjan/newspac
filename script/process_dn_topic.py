@@ -1,8 +1,9 @@
+import common
+common.DB_PATH = common.DB_DIR + '/newspacks2.db'
 import sys
 import os
 sys.path.append(os.path.dirname(__file__) + '/..')
 import sqlite3
-import common
 
 conn = sqlite3.connect(common.DB_PATH)
 

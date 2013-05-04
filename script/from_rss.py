@@ -1,4 +1,6 @@
 # -*- encoding: utf-8 -*-
+import common
+common.DB_PATH = common.DB_DIR + '/newspacks2.db'
 import simplejson as json
 import database as db
 db.THREAD_LOCAL = True

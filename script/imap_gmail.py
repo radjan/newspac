@@ -1,5 +1,7 @@
 #! /bin/env python
 # -*- coding: utf-8 -*-
+import common
+common.DB_PATH = common.DB_DIR + '/newspacks2.db' 
 import sys
 idx = int(sys.argv[1]) if len(sys.argv) > 1 else None
 import os
@@ -15,14 +17,13 @@ import base64
 from datetime import datetime, tzinfo, timedelta
 
 import database as db
-import common
 db.THREAD_LOCAL = True
 
 log = common.get_logger()
 
 HOST = 'imap.gmail.com'
 USERNAME = 'news.packs@gmail.com'
-PASSWORD = ''
+PASSWORD = 'news0987!@#'
 ssl = True
 
 TOPIC_TITLE = 'title'

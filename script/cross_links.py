@@ -1,16 +1,17 @@
+import common
+common.DB_PATH = common.DB_DIR + '/newspacks2.db'
 import sys
 import os
 sys.path.append(os.path.dirname(__file__) + '/..')
 import sqlite3
-import common
 import database as db
 db.THREAD_LOCAL = True
 import datetime
 TS_FORMAT = '%Y-%m-%d %H:%M:%S'
 ONE_DAY = datetime.timedelta(days=1)
 ONE_HOUR = datetime.timedelta(hours=1)
-#now the script runs every 3 hour, given it two chances
-PROCESS_WINDOW = ONE_HOUR * 7
+#now the script runs every 2 hour, given it two chances
+PROCESS_WINDOW = ONE_HOUR * 5
 
 log = common.get_logger()
 
