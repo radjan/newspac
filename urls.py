@@ -15,6 +15,7 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
+    #url(r'.*', 'views.maintenance'),
     url(r'^robots.txt$', 'views.robot'), 
     url(r'.*favicon.ico$', 'views.empty'), 
     url(r'^topic$', 'views.topic'), 
@@ -27,6 +28,4 @@ urlpatterns = patterns('',
 urlpatterns += staticfiles_urlpatterns()
 urlpatterns += patterns('',
     url(r'.*', 'views.index'),  
-    #url(r'.*', 'views.maintenance'),  
 )
-

@@ -71,6 +71,9 @@ def robot(request):
 User-agent: *
 Disallow: /topic_ana
 Disallow: /source
+Disallow: /topic.csv
+Disallow: /article
+Disallow: /topic
 ''', mimetype="text/plain")
 @benchmark
 def index(request):
