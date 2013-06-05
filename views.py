@@ -39,6 +39,7 @@ def benchmark(fn):
                 return HttpResponse('')
             return fn(*args, **kw)
         except Exception, e:
+            log.error(e)
             raise
         finally:
             if is_log:
@@ -67,14 +68,10 @@ def maintenance(request):
 
 @benchmark
 def robot(request):
-    return HttpResponse('''
-User-agent: *
-Disallow: /topic_ana
-Disallow: /source
-Disallow: /topic.csv
-Disallow: /article
-Disallow: /topic
-''', mimetype="text/plain")
+    return HttpResponse('''User-agent: *
+Disallow: /*
+''', content_type="text/plain")
+
 @benchmark
 def index(request):
     topics = db.homepage_topics()
