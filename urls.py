@@ -24,6 +24,8 @@ urlpatterns = patterns('',
     url(r'^power_price$', 'views.power_price'), 
     url(r'^source$', 'views.source'),
     url(r'^d/topic.csv$', 'views.dtopic'),
+    url(r'^api/topics', 'apis.topics'),
+    url(r'^api/sources', 'apis.sources'),
 )
 urlpatterns += staticfiles_urlpatterns()
 urlpatterns += patterns('',

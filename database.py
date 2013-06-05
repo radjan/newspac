@@ -281,6 +281,18 @@ def get_source(cursor, name):
     source = cursor.fetchone()
     return dict(zip(cols, source)) if source else None
 
+@transaction
+def list_sources(cursor):
+    #XXX mail parser produces garbage
+    sql = 'select name from'\
+          ' (select name, count(a.id) as amount'\
+          '  from source s inner join article a on s.name = a.source'\
+          '  group by name)'\
+          ' where amount > 1'
+    cursor.execute(sql)
+    fetch = cursor.fetchall()
+    return [record[0] for record in fetch]
+
 #@log_entry
 @transaction
 def get_topics_by_article(cursor, aid):
@@ -386,7 +398,6 @@ def get_articles_amount_by_topics(cursor, topics, start=None, end=None, limit=0)
              '''\
              + start_cause + end_cause + limit_cause
         sql = sql % (','.join(['?'] * len(topics)),)
-        print sql
         topics_tuple = tuple(topics)
         cursor.execute(sql, topics_tuple + (len(topics_tuple), topics_tuple[0]))
     else:
