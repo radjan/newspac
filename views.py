@@ -123,13 +123,13 @@ def topic(request):
         except Exception:
             limit = 100
 
-
+    log.error(topics_str)
     topics = topics_str.split(common.TOPIC_SEPARATOR)
     topic_dicts = [dict(topic=t, rm_q='') for t in topics]
     if len(topics) == 1:
-        articles = db.list_articles_by_topic(topics[0], limit)
+        articles = db.list_articles_by_topic(topics[0], limit=limit)
     else:
-        articles = db.list_articles_by_topics(topics, limit)
+        articles = db.list_articles_by_topics(topics, limit=limit)
         for topic_dict in topic_dicts:
             tmp_topics = topics[:]
             tmp_topics.remove(topic_dict['topic'])

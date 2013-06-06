@@ -181,10 +181,14 @@ def homepage_topics(cursor):
 
 #@log_entry
 @transaction
-def list_articles_by_topic(cursor, topic_title, limit=0):
-    limit_cause = ''
+def list_articles_by_topic(cursor, topic_title, start=None, end=None, limit=0):
+    start_clause = end_clause = limit_clause = ''
+    if start:
+        start_clause = ' AND a.url_date >= \'%s\'' % start.strftime(DATE_FORMAT)
+    if end:
+        end_clause = ' AND a.url_date <= \'%s\'' % end.strftime(DATE_FORMAT)
     if limit > 0:
-        limit_cause = ' limit %s' % limit
+        limit_clause = ' limit %s' % limit
     cols = ['id', 'title', 'url', 'url_date', 'url_status', 'created',
             'source', 'source_url', 'brief']
     sql = '''
@@ -194,9 +198,10 @@ def list_articles_by_topic(cursor, topic_title, limit=0):
                  inner join topic_article_rel as t_a_rel on a.id = t_a_rel.article_id
                  inner join source s on a.source = s.name
           where
-                t_a_rel.topic_title = ?
-          order by a.created desc
-          ''' + limit_cause
+                t_a_rel.topic_title = ?'''\
+          + start_clause + end_clause + \
+          'order by a.created desc' \
+          + limit_clause
     cursor.execute(sql, (topic_title,))
     fetch = cursor.fetchall()
     return [dict(zip(cols, record)) for record in fetch]
@@ -206,9 +211,9 @@ def list_articles_by_topic(cursor, topic_title, limit=0):
 def list_articles_by_topics(cursor, topics, limit=0):
     if not topics:
         return []
-    limit_cause = ''
+    limit_clause = ''
     if limit > 0:
-        limit_cause = ' LIMIT %s' % limit
+        limit_clause = ' LIMIT %s' % limit
     cols = ['id', 'title', 'url', 'url_date', 'url_status', 'created',
             'source', 'source_url', 'brief']
     sql = '''
@@ -228,7 +233,7 @@ def list_articles_by_topics(cursor, topics, limit=0):
                 AND aid_table.amount = ?
                 AND t_a_rel.topic_title = ?
           ORDER BY a.url_date DESC
-          ''' + limit_cause
+          ''' + limit_clause
     sql = sql % ','.join(['?']*len(topics))
     cursor.execute(sql, tuple(topics) + (len(topics), topics[0]))
     fetch = cursor.fetchall()
@@ -236,15 +241,19 @@ def list_articles_by_topics(cursor, topics, limit=0):
      
 #@log_entry
 @transaction
-def list_articles_by_source(cursor, source, limit=0, addition_cols=None):
-    limit_cause = ''
+def list_articles_by_source(cursor, source, start=None, end=None, limit=0, addition_cols=None):
+    start_clause = end_clause = limit_clause = ''
+    if start:
+        start_clause = ' AND a.url_date >= \'%s\'' % start.strftime(DATE_FORMAT)
+    if end:
+        end_clause = ' AND a.url_date <= \'%s\'' % end.strftime(DATE_FORMAT)
     if limit > 0:
-        limit_cause = ' limit %s' % limit
-    cols_cause = ''
+        limit_clause = ' limit %s' % limit
+    cols_clause = ''
     if addition_cols is None:
         addition_cols = []
     if addition_cols:
-        cols_cause = reduce(lambda x, y: x + y, (', a.%s' % col for col in addition_cols))
+        cols_clause = reduce(lambda x, y: x + y, (', a.%s' % col for col in addition_cols))
     cols = ['id', 'title', 'url', 'url_date', 'url_status', 'created',
             'source', 'source_url'] + addition_cols
     sql = '''
@@ -254,9 +263,10 @@ def list_articles_by_source(cursor, source, limit=0, addition_cols=None):
                  inner join source s on a.source = s.name
           where
                 a.source = ?
+                %s %s
           order by a.created desc %s
           '''
-    sql = sql % (cols_cause, limit_cause)
+    sql = sql % (cols_clause, start_clause, end_clause, limit_clause)
     cursor.execute(sql, (source,))
     fetch = cursor.fetchall()
     return [dict(zip(cols, record)) for record in fetch]
@@ -306,13 +316,13 @@ def get_topics_by_article(cursor, aid):
 #@log_entry
 @transaction
 def get_related_topics(cursor, topics, start=None, end=None, limit=0):
-    start_cause = end_cause = limit_cause = ''
+    start_clause = end_clause = limit_clause = ''
     if start:
-        start_cause = ' AND a.url_date >= \'%s\'' % start.strftime(DATE_FORMAT)
+        start_clause = ' AND a.url_date >= \'%s\'' % start.strftime(DATE_FORMAT)
     if end:
-        end_cause = ' AND a.url_date <= \'%s\'' % end.strftime(DATE_FORMAT)
+        end_clause = ' AND a.url_date <= \'%s\'' % end.strftime(DATE_FORMAT)
     if limit > 0:
-        limit_cause = ' limit %s' % limit
+        limit_clause = ' limit %s' % limit
     if len(topics) > 1:
         sql = '''
                SELECT t_a_r2.topic_title, COUNT(DISTINCT t_a_r1.article_id) as count
@@ -334,12 +344,12 @@ def get_related_topics(cursor, topics, start=None, end=None, limit=0):
                    AND t_a_r1.topic_title IN (%s)
                    AND t_a_r2.topic_title NOT IN (%s)
              '''\
-             + start_cause + end_cause + \
+             + start_clause + end_clause + \
              '''
                GROUP BY t_a_r2.topic_title
                ORDER BY count DESC
              '''\
-             + limit_cause
+             + limit_clause
         sql = sql % ((','.join(['?'] * len(topics)),) * 3)
         topics_tuple = tuple(topics)
         cursor.execute(sql, topics_tuple + (len(topics_tuple),) + topics_tuple + topics_tuple)
@@ -357,12 +367,12 @@ def get_related_topics(cursor, topics, start=None, end=None, limit=0):
                    t_a_r1.topic_title = ?
                    AND t_a_r2.topic_title != ?
               '''\
-              + start_cause + end_cause + \
+              + start_clause + end_clause + \
               '''
                GROUP BY t_a_r2.topic_title
                ORDER BY count DESC
               '''\
-              + limit_cause
+              + limit_clause
         cursor.execute(sql, (topic, topic))
     cols = ['title', 'amount']
     return [dict(zip(cols, row)) for row in cursor.fetchall()]
@@ -370,13 +380,13 @@ def get_related_topics(cursor, topics, start=None, end=None, limit=0):
 #@log_entry
 @transaction
 def get_articles_amount_by_topics(cursor, topics, start=None, end=None, limit=0):
-    start_cause = end_cause = limit_cause = ''
+    start_clause = end_clause = limit_clause = ''
     if start:
-        start_cause = ' AND a.url_date >= \'%s\'' % start.strftime(DATE_FORMAT)
+        start_clause = ' AND a.url_date >= \'%s\'' % start.strftime(DATE_FORMAT)
     if end:
-        end_cause = ' AND a.url_date <= \'%s\'' % end.strftime(DATE_FORMAT)
+        end_clause = ' AND a.url_date <= \'%s\'' % end.strftime(DATE_FORMAT)
     if limit > 0:
-        limit_cause = ' limit %s' % limit
+        limit_clause = ' limit %s' % limit
     if len(topics) > 1:
         sql = '''
                SELECT COUNT(DISTINCT t_a_r1.article_id) as count
@@ -397,7 +407,7 @@ def get_articles_amount_by_topics(cursor, topics, start=None, end=None, limit=0)
                    AND t_a_r1.article_id = aid_table.aid
                    AND t_a_r1.topic_title = ?
              '''\
-             + start_cause + end_cause + limit_cause
+             + start_clause + end_clause + limit_clause
         sql = sql % (','.join(['?'] * len(topics)),)
         topics_tuple = tuple(topics)
         cursor.execute(sql, topics_tuple + (len(topics_tuple), topics_tuple[0]))
@@ -412,7 +422,7 @@ def get_articles_amount_by_topics(cursor, topics, start=None, end=None, limit=0)
                WHERE 
                    t_a_r.topic_title = ?
               '''\
-              + start_cause + end_cause + limit_cause
+              + start_clause + end_clause + limit_clause
         cursor.execute(sql, (topic,))
     return cursor.fetchone()[0]
 
