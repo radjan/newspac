@@ -284,14 +284,15 @@ def get_source(cursor, name):
 @transaction
 def list_sources(cursor):
     #XXX mail parser produces garbage
-    sql = 'select name from'\
-          ' (select name, count(a.id) as amount'\
+    cols = ('name', 'url')
+    sql = 'select %s, %s from'\
+          ' (select name, s.url, count(a.id) as amount'\
           '  from source s inner join article a on s.name = a.source'\
           '  group by name)'\
-          ' where amount > 1'
+          ' where amount > 1' % cols
     cursor.execute(sql)
     fetch = cursor.fetchall()
-    return [record[0] for record in fetch]
+    return [dict(zip(cols, record)) for record in fetch]
 
 #@log_entry
 @transaction
