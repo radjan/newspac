@@ -159,6 +159,18 @@ def insert_or_update_t_a_rel(cursor, topic_title, article_id, brief):
     cursor.execute(sql, dict(topic_title=topic_title,
                              article_id=article_id,
                              brief=brief))
+
+@transaction
+def get_topic(cursor, topic):
+    cols = ('title', 'brief', 'last_modified', 'created')
+    sql = 'select %s, %s, %s, %s from topic'\
+          ' where title = ?' % cols
+    cursor.execute(sql, (topic,))
+    t = cursor.fetchone()
+    if t:
+        return dict(zip(cols, t))
+    return None
+
 #@log_entry
 @transaction
 def list_topics(cursor):
