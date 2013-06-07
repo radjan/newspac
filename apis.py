@@ -7,7 +7,7 @@ import urllib
 import database as db
 import views
 
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse
 from django.utils import simplejson as json
 
 CONTENT_TYPE_JSON = 'application/json; charset=utf-8'
@@ -42,11 +42,16 @@ def _parse_params(request):
         limit = MAX_LIMIT
     return start, end, limit
 
+def _404_response():
+    r = HttpResponse("Not Found")
+    r.status_code = 404
+    return r
+
 @views.benchmark
 def topic(request, topic=''):
     t = db.get_topic(topic)
     if t is None:
-        raise Http404
+        return _404_response()
     start, end, limit = _parse_params(request)
     articles = db.list_articles_by_topic(topic, start=start, end=end, limit=limit)
     t['articles'] = articles
@@ -56,7 +61,7 @@ def topic(request, topic=''):
 def source(request, source=''):
     s = db.get_source(source)
     if s is None:
-        raise Http404
+        return _404_response()
     start, end, limit = _parse_params(request)
     articles = db.list_articles_by_source(source, start=start, end=end, limit=limit)
     s['articles'] = articles
@@ -65,11 +70,11 @@ def source(request, source=''):
 @views.benchmark
 def article(request, aid=''):
     if not aid:
-        raise Http404()
+        return _404_response()
     aid = int(aid)
     article = db.get_article(aid)
     if not article:
-        raise Http404()
+        return _404_response()
     article['source'] = db.get_source(article['source'])
     article['topics'] = db.get_topics_by_article(aid)
     article['url'] = urllib.unquote(article['url'])
