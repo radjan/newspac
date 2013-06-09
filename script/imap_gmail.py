@@ -30,7 +30,7 @@ TOPIC_TITLE = 'title'
 RECEIVE_TIME = 'receive_time'
 DATE_FORMAT = '%a, %d %b %Y %H:%M:%S +0000'
 
-MAX_BATCH_AMOUNT = 30
+MAX_BATCH_AMOUNT = 50
 
 class UTC(tzinfo):
     def utcoffset(self, dt): return timedelta(0)

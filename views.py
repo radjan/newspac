@@ -123,7 +123,6 @@ def topic(request):
         except Exception:
             limit = 100
 
-    log.error(topics_str)
     topics = topics_str.split(common.TOPIC_SEPARATOR)
     topic_dicts = [dict(topic=t, rm_q='') for t in topics]
     if len(topics) == 1:

@@ -27,13 +27,12 @@ default_feeds.append(_feed_dict('http://www.appledaily.com.tw/rss/create/kind/se
 
 def _load_state():
     with open('feed_state', 'r') as f:
-        state = json.loads(f.readline())
+        state = json.load(f)
     return state
 
 def _save_state(states):
-    state_str = json.dumps(states)
     with open('feed_state', 'w') as f:
-        f.write(state_str)
+        json.dump(states, f)
 
 def main():
     state = _load_state()
