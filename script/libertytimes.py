@@ -9,6 +9,8 @@ class Handler(rss_base.RssBaseHandler):
             u = urllib2.urlopen(url)
             url = u.geturl()
             bs = BeautifulSoup(u)
+            canonical_url = self.get_canonical_url(bs)
+            url = canonical_url if canonical_url else url
             if 'iservice' in url:
                 return url, bs.find(attrs={'id': re.compile('newsc'),
                                            'role': re.compile('article')}).get_text()

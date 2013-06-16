@@ -13,6 +13,8 @@ class Handler(rss_base.RssBaseHandler):
             u = urllib2.urlopen(url)
             url = u.geturl()
             bs = BeautifulSoup(u)
+            canonical_url = self.get_canonical_url(bs)
+            url = canonical_url if canonical_url else url
             return url, bs.find(attrs={'class': re.compile('articulum')}).get_text()
         except Exception, e:
             #raise
