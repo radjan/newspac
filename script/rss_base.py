@@ -49,6 +49,12 @@ class RssBaseHandler(object):
     def _to_utc(self, date):
         return date.replace(tzinfo=UTC())
 
+    def get_canonical_url(self, beautifulsoup):
+        canonical_link = beautifulsoup.find('link', rel='canonical')
+        if canonical_link:
+            return canonical_link['href']
+        return None
+
     def getTextByTagName(self, node, tagName):
         return self.getText(node.getElementsByTagName(tagName)[0])
 
