@@ -12,7 +12,13 @@ class Handler(rss_base.RssBaseHandler):
         try:
             u = urllib2.urlopen(url)
             url = u.geturl()
-            bs = BeautifulSoup(u)
+
+            # <option value="balabala/value"selected>
+            # XXX This kind of data confuses beautiful soup
+            full_text = u.read()
+            full_text = full_text.replace("\"selected", "\" selected")
+
+            bs = BeautifulSoup(full_text)
             canonical_url = self.get_canonical_url(bs)
             url = canonical_url if canonical_url else url
             return url, bs.find(attrs={'class': re.compile('articulum')}).get_text()
