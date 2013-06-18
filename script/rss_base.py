@@ -14,7 +14,7 @@ class UTC8(tzinfo):
     def dst(self, dt): return timedelta(hours=8)
 
 class RssBaseHandler(object):
-    def get_articles(self, feed_url, last=None, limit=25):
+    def get_articles(self, feed_url, last=None, limit=100):
         last = self._to_utc(datetime.strptime(last, DATE_FORMAT)) if last else datetime(1970, 1, 1, tzinfo=UTC())
         max_last = last
         articles = []
@@ -37,7 +37,8 @@ class RssBaseHandler(object):
             articles.append(dict(url=link,
                                  title=title,
                                  url_date=pubDate,
-                                 cached=cached))
+                                 cached=cached,
+                                 url_status=0))
         return articles, max_last.strftime(DATE_FORMAT)
 
     def fetch_text(self, link):
