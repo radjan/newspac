@@ -107,6 +107,8 @@ def _get_source_name(cursor, name):
 def ensure_article_exists(cursor, article, overwrite=False):
     if 'cached' not in article:
         article['cached'] = None
+    if 'url_status' not in article:
+        article['url_status'] = -1
 
     if 'id' in article:
         article_id = article['id']
@@ -116,11 +118,11 @@ def ensure_article_exists(cursor, article, overwrite=False):
     if article_id and not overwrite:
         return article_id
     elif not article_id:
-        sql = 'insert into article (title, url, source, url_date, cached)'\
-                     ' values (:title, :url, :source, :url_date, :cached)'
+        sql = 'insert into article (title, url, source, url_date, cached, url_status)'\
+                     ' values (:title, :url, :source, :url_date, :cached, :url_status)'
     else:
         sql = 'update article set title = :title, source = :source,'\
-              ' url = :url, url_date = :url_date, cached = :cached'\
+              ' url = :url, url_date = :url_date, cached = :cached, url_status = :url_status'\
               ' where id = :id'
         article['id'] = article_id
     source_name = _ensure_source_exists(cursor, article.pop('source'))
@@ -290,6 +292,14 @@ def get_article(cursor, aid):
     cols = ('id', 'title', 'url', 'source', 'url_date', 'url_status', 'cached')
     sql = 'select %s, %s, %s, %s, %s, %s, %s from article where id = ?' % cols 
     cursor.execute(sql, (aid,))
+    article = cursor.fetchone()
+    return dict(zip(cols, article)) if article else None
+
+@transaction
+def get_article_by_url(cursor, url):
+    cols = ('id', 'title', 'url', 'source', 'url_date', 'url_status', 'cached')
+    sql = 'select %s, %s, %s, %s, %s, %s, %s from article where url = ?' % cols 
+    cursor.execute(sql, (url,))
     article = cursor.fetchone()
     return dict(zip(cols, article)) if article else None
 

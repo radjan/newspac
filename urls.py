@@ -29,6 +29,7 @@ urlpatterns = patterns('',
     url(r'^api/sources', 'apis.sources'),
     url(r'^api/source/(?P<source>[^/]+)', 'apis.source'),
     url(r'^api/article/(?P<aid>\d+)', 'apis.article'),
+    url(r'^api/article$', 'apis.article_by_url'),
 )
 urlpatterns += staticfiles_urlpatterns()
 urlpatterns += patterns('',

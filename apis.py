@@ -43,7 +43,8 @@ def _parse_params(request):
     return start, end, limit
 
 def _404_response():
-    r = HttpResponse("Not Found")
+    r = HttpResponse(json.dumps({"error_code": 404,
+                                 "error": "Resource Not Found"}))
     r.status_code = 404
     return r
 
@@ -82,3 +83,20 @@ def article(request, aid=''):
     #if article['cached'] and len(article['cached']) > 100:
     #    article['cached'] = article['cached'][:100] + '...'
     return json_response(article)
+
+@views.benchmark
+def article_by_url(request):
+    url = views._get(request, 'url')
+    if not url:
+        return _404_response()
+    article = db.get_article_by_url(url)
+    if not article:
+        return _404_response()
+    article['source'] = db.get_source(article['source'])
+    #article['topics'] = db.get_topics_by_article(aid)
+    article['url'] = urllib.unquote(article['url'])
+    article['source']['url'] = urllib.unquote(article['source']['url'])
+    #if article['cached'] and len(article['cached']) > 100:
+    #    article['cached'] = article['cached'][:100] + '...'
+    return json_response(article)
+    
